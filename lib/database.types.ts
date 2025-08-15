@@ -24,6 +24,7 @@ export interface Database {
           enable_blog: boolean
           meta_title: string | null
           meta_description: string | null
+          is_admin: boolean
           updated_at: string
           created_at: string
         }
@@ -41,6 +42,7 @@ export interface Database {
           enable_blog?: boolean
           meta_title?: string | null
           meta_description?: string | null
+          is_admin?: boolean
           updated_at?: string
           created_at?: string
         }
@@ -58,6 +60,7 @@ export interface Database {
           enable_blog?: boolean
           meta_title?: string | null
           meta_description?: string | null
+          is_admin?: boolean
           updated_at?: string
           created_at?: string
         }
@@ -152,6 +155,18 @@ export interface Database {
       increment_view_count: {
         Args: {
           project_id: string
+        }
+        Returns: undefined
+      }
+      is_admin: {
+        Args: {
+          user_id: string
+        }
+        Returns: boolean
+      }
+      make_admin: {
+        Args: {
+          target_user_id: string
         }
         Returns: undefined
       }

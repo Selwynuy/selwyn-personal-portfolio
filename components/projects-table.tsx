@@ -14,16 +14,29 @@ import {
 } from '@/components/ui/table'
 import { Database } from '@/lib/database.types'
 import { deleteProject } from '@/lib/actions'
+import { ProjectForm } from '@/components/project-form'
+import { ProjectPreviewModal } from '@/components/project-preview-modal'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Edit, Eye, Trash2 } from 'lucide-react'
 
 type Project = Database['public']['Tables']['projects']['Row']
 
 interface ProjectsTableProps {
   initialProjects: Project[]
+  userId: string
 }
 
-export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
+export function ProjectsTable({ initialProjects, userId }: ProjectsTableProps) {
   const [projects, setProjects] = useState(initialProjects)
   const [loading, setLoading] = useState(false)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
+  const [viewingProject, setViewingProject] = useState<Project | null>(null)
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this project?')) return
@@ -37,6 +50,19 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleEdit = (project: Project) => {
+    setEditingProject(project)
+  }
+
+  const handleView = (project: Project) => {
+    setViewingProject(project)
+  }
+
+  const handleFormSuccess = () => {
+    setEditingProject(null)
+    window.location.reload() // Refresh to show changes
   }
 
   return (
@@ -121,14 +147,30 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
                   <TableCell>{new Date(project.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">Edit</Button>
-                      <Button size="sm" variant="outline">View</Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleEdit(project)}
+                        disabled={loading}
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        Edit
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleView(project)}
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View
+                      </Button>
                       <Button 
                         size="sm" 
                         variant="destructive"
                         onClick={() => handleDelete(project.id)}
                         disabled={loading}
                       >
+                        <Trash2 className="w-4 h-4 mr-1" />
                         Delete
                       </Button>
                     </div>
@@ -139,6 +181,32 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Edit Project Modal */}
+      <Dialog open={!!editingProject} onOpenChange={(open) => !open && setEditingProject(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Project</DialogTitle>
+            <DialogDescription>
+              Update your project details
+            </DialogDescription>
+          </DialogHeader>
+          {editingProject && (
+            <ProjectForm 
+              userId={userId}
+              project={editingProject}
+              onSuccess={handleFormSuccess}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Project Preview Modal */}
+      <ProjectPreviewModal
+        project={viewingProject}
+        isOpen={!!viewingProject}
+        onClose={() => setViewingProject(null)}
+      />
     </div>
   )
 }

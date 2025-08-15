@@ -7,9 +7,16 @@ import { ProjectCard } from '@/components/project-card'
 import { ProjectCardSkeleton } from '@/components/project-card-skeleton'
 import Link from 'next/link'
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  
+  // Await searchParams in Next.js 15
+  const params = await searchParams
 
   // Fetch featured projects
   const { data: projects } = await supabase

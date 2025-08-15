@@ -6,28 +6,31 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { createProfile } from '@/lib/actions'
+import { LogoutButton } from '@/components/logout-button'
+import { BarChart3, FolderOpen, Mail, Settings, Menu } from 'lucide-react'
 
 // Navigation items
 const navItems = [
   {
     title: "Overview",
     href: "/dashboard",
-    icon: "📊"
+    icon: BarChart3
   },
   {
     title: "Projects",
     href: "/dashboard/projects",
-    icon: "📁"
+    icon: FolderOpen
   },
   {
     title: "Messages",
     href: "/dashboard/messages",
-    icon: "📧"
+    icon: Mail
   },
   {
     title: "Settings",
     href: "/dashboard/settings",
-    icon: "⚙️"
+    icon: Settings
   }
 ]
 
@@ -41,6 +44,25 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
 
   if (error || !user) {
     redirect('/auth/login')
+  }
+
+  // Ensure profile exists
+  let profile = null
+  try {
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+    
+    profile = profileData
+  } catch (profileError) {
+    // Profile doesn't exist, create one
+    try {
+      profile = await createProfile(user.id, user.email || '')
+    } catch (createError) {
+      console.error('Failed to create profile:', createError)
+    }
   }
 
   return (
@@ -61,7 +83,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
               </Avatar>
               <div className="space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {user.user_metadata?.full_name || 'Admin User'}
+                  {profile?.full_name || user.user_metadata?.full_name || 'Admin User'}
                 </p>
                 <p className="text-xs text-slate-500">{user.email}</p>
               </div>
@@ -73,9 +95,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
                   href={item.href}
                   className="flex items-center gap-3 rounded-lg px-3 py-2 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <span className="flex h-6 w-6 items-center justify-center">
-                    {item.icon}
-                  </span>
+                  <item.icon className="h-5 w-5" />
                   {item.title}
                 </Link>
               ))}
@@ -83,11 +103,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
           </div>
         </ScrollArea>
         <div className="border-t p-4">
-          <form action="/auth/sign-out" method="post">
-            <Button type="submit" variant="outline" size="sm" className="w-full">
-              🚪 Sign Out
-            </Button>
-          </form>
+          <LogoutButton className="w-full" />
         </div>
       </aside>
 
@@ -96,7 +112,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="shrink-0">
-              ≡
+              <Menu className="h-4 w-4" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
@@ -114,7 +130,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
                   </Avatar>
                   <div className="space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      {user.user_metadata?.full_name || 'Admin User'}
+                      {profile?.full_name || user.user_metadata?.full_name || 'Admin User'}
                     </p>
                     <p className="text-xs text-slate-500">{user.email}</p>
                   </div>
@@ -126,9 +142,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
                       href={item.href}
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     >
-                      <span className="flex h-6 w-6 items-center justify-center">
-                        {item.icon}
-                      </span>
+                      <item.icon className="h-5 w-5" />
                       {item.title}
                     </Link>
                   ))}
@@ -136,11 +150,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
               </div>
             </ScrollArea>
             <div className="border-t p-4">
-              <form action="/auth/sign-out" method="post">
-                <Button type="submit" variant="outline" size="sm" className="w-full">
-                  🚪 Sign Out
-                </Button>
-              </form>
+              <LogoutButton className="w-full" />
             </div>
           </SheetContent>
         </Sheet>

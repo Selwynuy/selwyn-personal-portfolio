@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
@@ -22,6 +22,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirectTo') || '/'
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,13 +32,33 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       if (error) throw error
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push('/protected')
+      
+      // Check if user is admin to determine redirect
+      if (data.user) {
+        try {
+          const { data: isAdmin } = await supabase.rpc('is_admin', { user_id: data.user.id })
+          
+          // If redirectTo is dashboard but user is not admin, go to home instead
+          if (redirectTo === '/dashboard' && !isAdmin) {
+            router.push('/')
+          } else if (redirectTo.startsWith('/dashboard') && !isAdmin) {
+            // If trying to access any dashboard route but not admin, go to home
+            router.push('/')
+          } else {
+            router.push(redirectTo)
+          }
+        } catch (adminCheckError) {
+          // If admin check fails, assume not admin and redirect to home
+          router.push(redirectTo === '/dashboard' || redirectTo.startsWith('/dashboard') ? '/' : redirectTo)
+        }
+      } else {
+        router.push(redirectTo)
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {

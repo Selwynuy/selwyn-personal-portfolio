@@ -20,19 +20,27 @@ type Message = Database['public']['Tables']['messages']['Row']
 
 interface MessagesTableProps {
   initialMessages: Message[]
+  onMessagesChange?: (messages: Message[]) => void
 }
 
-export function MessagesTable({ initialMessages }: MessagesTableProps) {
+export function MessagesTable({ initialMessages, onMessagesChange }: MessagesTableProps) {
   const [messages, setMessages] = useState(initialMessages)
   const [loading, setLoading] = useState(false)
+
+  // Update parent component when messages change
+  const updateMessages = (newMessages: Message[]) => {
+    setMessages(newMessages)
+    onMessagesChange?.(newMessages)
+  }
 
   const handleMarkAsRead = async (id: string) => {
     setLoading(true)
     try {
       await updateMessageStatus(id, 'read')
-      setMessages(messages.map(m => 
+      const updatedMessages = messages.map(m => 
         m.id === id ? { ...m, status: 'read' } : m
-      ))
+      )
+      updateMessages(updatedMessages)
     } catch (error) {
       console.error('Error marking message as read:', error)
     } finally {
@@ -46,7 +54,8 @@ export function MessagesTable({ initialMessages }: MessagesTableProps) {
     setLoading(true)
     try {
       await deleteMessage(id)
-      setMessages(messages.filter(m => m.id !== id))
+      const updatedMessages = messages.filter(m => m.id !== id)
+      updateMessages(updatedMessages)
     } catch (error) {
       console.error('Error deleting message:', error)
     } finally {
@@ -83,8 +92,13 @@ export function MessagesTable({ initialMessages }: MessagesTableProps) {
             <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">85%</div>
-            <p className="text-xs text-slate-600">Last 30 days</p>
+            <div className="text-2xl font-bold">
+              {messages.length === 0 
+                ? '0%' 
+                : `${Math.round((messages.filter(m => m.status === 'read').length / messages.length) * 100)}%`
+              }
+            </div>
+            <p className="text-xs text-slate-600">Messages reviewed</p>
           </CardContent>
         </Card>
       </div>
@@ -139,7 +153,18 @@ export function MessagesTable({ initialMessages }: MessagesTableProps) {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">Reply</Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          const subject = `Re: ${message.subject || 'Your message'}`
+                          const body = `\n\n--- Original Message ---\nFrom: ${message.name}\nEmail: ${message.email}\nDate: ${new Date(message.created_at).toLocaleDateString()}\n\n${message.message}`
+                          const mailtoLink = `mailto:${message.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+                          window.location.href = mailtoLink
+                        }}
+                      >
+                        Reply
+                      </Button>
                       {message.status === 'unread' && (
                         <Button 
                           size="sm" 

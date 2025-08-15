@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/server'
 import { redirect } from 'next/navigation'
 import { SettingsForm } from '@/components/settings-form'
+import { createProfile } from '@/lib/actions'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -10,12 +11,25 @@ export default async function SettingsPage() {
     redirect('/auth/login')
   }
 
-  // Fetch profile data
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
+  // Fetch or create profile data
+  let profile = null
+  try {
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+    
+    profile = profileData
+  } catch (profileError) {
+    // Profile doesn't exist, create one
+    try {
+      profile = await createProfile(user.id, user.email || '')
+    } catch (createError) {
+      console.error('Failed to create profile:', createError)
+      // Continue with null profile - the form will handle it
+    }
+  }
 
   return (
     <div className="p-8 space-y-8">

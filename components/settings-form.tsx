@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ImageUpload } from '@/components/image-upload'
 import { Database } from '@/lib/database.types'
 import { updateProfile } from '@/lib/actions'
+import { CheckCircle } from 'lucide-react'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -25,6 +26,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || user?.user_metadata?.avatar_url)
 
   const [formData, setFormData] = useState({
@@ -51,6 +53,13 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
         ...formData,
         avatar_url: avatarUrl
       })
+      
+      setSuccess(true)
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(false), 3000)
+      
+      // Refresh the page to update all components including navbar
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update profile')
@@ -62,8 +71,15 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {error && (
-        <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm">
+        <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm animate-in fade-in slide-in-from-top-1">
           {error}
+        </div>
+      )}
+      
+      {success && (
+        <div className="bg-green-50 text-green-700 p-3 rounded-md text-sm animate-in fade-in slide-in-from-top-1">
+          <CheckCircle className="w-4 h-4 mr-2 inline" />
+          Profile updated successfully! Changes will appear across the site.
         </div>
       )}
 
