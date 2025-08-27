@@ -11,8 +11,9 @@ import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ImageUpload } from '@/components/image-upload'
+import { SocialLinksEditor } from '@/components/social-links-editor'
 import { Database } from '@/lib/database.types'
-import { updateProfile } from '@/lib/actions'
+import { updateProfile, updateSiteSettings } from '@/lib/actions'
 import { CheckCircle } from 'lucide-react'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -20,9 +21,17 @@ type Profile = Database['public']['Tables']['profiles']['Row']
 interface SettingsFormProps {
   user: any
   profile?: Profile | null
+  siteSettings?: {
+    show_view_counts: boolean
+    show_featured_first: boolean
+    enable_blog: boolean
+    meta_title: string | null
+    meta_description: string | null
+  } | null
+  isAdmin?: boolean
 }
 
-export function SettingsForm({ user, profile }: SettingsFormProps) {
+export function SettingsForm({ user, profile, siteSettings, isAdmin = false }: SettingsFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -36,11 +45,11 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
     github_url: profile?.github_url || '',
     linkedin_url: profile?.linkedin_url || '',
     twitter_url: profile?.twitter_url || '',
-    show_view_counts: profile?.show_view_counts ?? true,
-    show_featured_first: profile?.show_featured_first ?? true,
-    enable_blog: profile?.enable_blog ?? false,
-    meta_title: profile?.meta_title || '',
-    meta_description: profile?.meta_description || ''
+    show_view_counts: siteSettings?.show_view_counts ?? true,
+    show_featured_first: siteSettings?.show_featured_first ?? true,
+    enable_blog: siteSettings?.enable_blog ?? false,
+    meta_title: siteSettings?.meta_title || '',
+    meta_description: siteSettings?.meta_description || ''
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,10 +58,27 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
     setError(null)
 
     try {
+      // Persist identity-only profile fields
       await updateProfile(user.id, {
-        ...formData,
+        full_name: formData.full_name,
+        title: formData.title,
+        bio: formData.bio,
+        github_url: formData.github_url,
+        linkedin_url: formData.linkedin_url,
+        twitter_url: formData.twitter_url,
         avatar_url: avatarUrl
       })
+      
+      // If admin, also persist site settings (singleton)
+      if (isAdmin) {
+        await updateSiteSettings({
+          show_view_counts: formData.show_view_counts,
+          show_featured_first: formData.show_featured_first,
+          enable_blog: formData.enable_blog,
+          meta_title: formData.meta_title || null,
+          meta_description: formData.meta_description || null,
+        })
+      }
       
       setSuccess(true)
       
@@ -141,46 +167,21 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Social Links</CardTitle>
-              <CardDescription>Connect your social media accounts.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="github_url">GitHub</Label>
-                  <Input
-                    id="github_url"
-                    value={formData.github_url}
-                    onChange={e => setFormData({ ...formData, github_url: e.target.value })}
-                    placeholder="https://github.com/username"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="linkedin_url">LinkedIn</Label>
-                  <Input
-                    id="linkedin_url"
-                    value={formData.linkedin_url}
-                    onChange={e => setFormData({ ...formData, linkedin_url: e.target.value })}
-                    placeholder="https://linkedin.com/in/username"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="twitter_url">Twitter</Label>
-                  <Input
-                    id="twitter_url"
-                    value={formData.twitter_url}
-                    onChange={e => setFormData({ ...formData, twitter_url: e.target.value })}
-                    placeholder="https://twitter.com/username"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {isAdmin && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Social Links</CardTitle>
+                <CardDescription>Manage your social media links.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <SocialLinksEditor userId={user.id} initialLinks={[]} />
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
-        {/* Portfolio Settings */}
+        {/* Portfolio Settings (admin-only) */}
+        {isAdmin && (
         <TabsContent value="portfolio" className="space-y-4">
           <Card>
             <CardHeader>
@@ -248,6 +249,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
             </CardContent>
           </Card>
         </TabsContent>
+        )}
 
         {/* Account Settings */}
         <TabsContent value="account" className="space-y-4">

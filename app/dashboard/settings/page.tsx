@@ -31,6 +31,17 @@ export default async function SettingsPage() {
     }
   }
 
+  // Check admin and fetch site settings (singleton)
+  const { data: isAdmin } = await supabase.rpc('is_admin', { user_id: user.id })
+  let siteSettings: any = null
+  if (isAdmin) {
+    const { data } = await supabase
+      .from('site_settings')
+      .select('*')
+      .single()
+    siteSettings = data
+  }
+
   return (
     <div className="p-8 space-y-8">
       <div>
@@ -38,7 +49,7 @@ export default async function SettingsPage() {
         <p className="text-slate-600 dark:text-slate-300">Manage your portfolio settings and preferences</p>
       </div>
 
-      <SettingsForm user={user} profile={profile} />
+      <SettingsForm user={user} profile={profile} siteSettings={siteSettings} isAdmin={!!isAdmin} />
     </div>
   )
 }

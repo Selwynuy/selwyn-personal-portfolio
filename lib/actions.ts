@@ -7,6 +7,16 @@ import { Database } from './database.types'
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Project = Database['public']['Tables']['projects']['Row']
 type Message = Database['public']['Tables']['messages']['Row']
+type SiteSettings = {
+  id: boolean
+  show_view_counts: boolean
+  show_featured_first: boolean
+  enable_blog: boolean
+  meta_title: string | null
+  meta_description: string | null
+  updated_at?: string
+  created_at?: string
+}
 
 // Auth Actions
 export async function signUp(email: string, password: string) {
@@ -48,6 +58,46 @@ export async function makeUserAdmin(targetUserId: string) {
   
   if (error) throw error
   revalidatePath('/dashboard/settings')
+}
+
+// Site Settings Actions (singleton)
+export async function getSiteSettings() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('site_settings')
+    .select('*')
+    .single()
+
+  if (error) throw error
+  return data as SiteSettings
+}
+
+export async function updateSiteSettings(settings: Partial<SiteSettings>) {
+  const supabase = await createClient()
+
+  // Prefer RPC if available; fallback to direct update
+  let rpcError: unknown = null
+  try {
+    const { data, error } = await supabase.rpc('update_site_settings', { p: settings as unknown as Record<string, unknown> })
+    if (error) rpcError = error
+    if (!rpcError) {
+      revalidatePath('/dashboard/settings')
+      return data as SiteSettings
+    }
+  } catch (e) {
+    rpcError = e
+  }
+
+  const { data, error } = await supabase
+    .from('site_settings')
+    .update({ ...settings, updated_at: new Date().toISOString() })
+    .eq('id', true)
+    .select()
+    .single()
+
+  if (error) throw error
+  revalidatePath('/dashboard/settings')
+  return data as SiteSettings
 }
 
 // Profile Actions
@@ -166,6 +216,68 @@ export async function getProjects(userId: string, includeUnpublished = false) {
 
   if (error) throw error
   return data as Project[]
+}
+
+// Social Links Actions
+type SocialLink = {
+  id: string
+  user_id: string
+  platform: string
+  label: string | null
+  url: string
+  position: number
+  created_at?: string
+  updated_at?: string
+}
+
+export async function getSocialLinks(userId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('social_links')
+    .select('*')
+    .eq('user_id', userId)
+    .order('position', { ascending: true })
+
+  if (error) throw error
+  return (data || []) as SocialLink[]
+}
+
+export async function createSocialLink(link: Omit<SocialLink, 'id' | 'created_at' | 'updated_at'>) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('social_links')
+    .insert(link)
+    .select()
+    .single()
+
+  if (error) throw error
+  revalidatePath('/dashboard/settings')
+  return data as SocialLink
+}
+
+export async function updateSocialLink(id: string, patch: Partial<SocialLink>) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('social_links')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  revalidatePath('/dashboard/settings')
+  return data as SocialLink
+}
+
+export async function deleteSocialLink(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('social_links')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+  revalidatePath('/dashboard/settings')
 }
 
 export async function getProject(projectId: string) {
