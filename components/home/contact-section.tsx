@@ -9,7 +9,7 @@ interface ContactSectionProps {
 
 export function ContactSection({ userId }: ContactSectionProps) {
   return (
-    <section id="contact" className="container mx-auto px-4 py-20">
+    <section id="contact" className="container mx-auto px-4 py-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-white mb-6">
           Get In Touch

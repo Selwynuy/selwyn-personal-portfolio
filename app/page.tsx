@@ -6,6 +6,7 @@ import { About } from '@/components/home/about'
 import { ProjectsSection } from '@/components/home/projects-section'
 import { ContactSection } from '@/components/home/contact-section'
 import { SiteFooter } from '@/components/home/site-footer'
+import { SkillsMarquee } from '@/components/home/skills-marquee'
 
 export default async function Home({
   searchParams,
@@ -27,10 +28,10 @@ export default async function Home({
     .order('created_at', { ascending: false })
     .limit(3)
 
-  // Fetch site owner's social links (first admin's links)
+  // Fetch site owner (first admin) basic profile
   const { data: owner } = await supabase
     .from('profiles')
-    .select('id')
+    .select('id, avatar_url, full_name')
     .eq('is_admin', true)
     .limit(1)
     .single()
@@ -46,10 +47,14 @@ export default async function Home({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <Hero socialLinks={socialLinks} />
-      <About />
+    <div className="min-h-screen bg-transparent dark:bg-transparent">
+      <Hero socialLinks={socialLinks} avatarUrl={owner?.avatar_url || undefined} ownerName={owner?.full_name || undefined} />
+      <SkillsMarquee />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
       <ProjectsSection projects={projects || []} />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
+      <About />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
       <ContactSection userId={user?.id ?? null} />
       <SiteFooter />
     </div>

@@ -1,64 +1,132 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { Github, Linkedin, Facebook, Globe } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { BrandIcon } from '@/components/ui/brand-icon'
 
 type SocialLink = { platform: string; url: string; label: string | null }
 
 interface HeroProps {
   socialLinks: SocialLink[]
+  avatarUrl?: string
+  ownerName?: string
 }
 
-export function Hero({ socialLinks }: HeroProps) {
+export function Hero({ socialLinks, avatarUrl, ownerName }: HeroProps) {
   return (
-    <section className="container mx-auto px-4 py-20 text-center">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6">
-          Hi, I'm <span className="text-blue-600 dark:text-blue-400">Selwyn</span>
-        </h1>
-        <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8">
-          Full Stack Developer | Designer | Problem Solver
-        </p>
-        <p className="text-lg text-slate-500 dark:text-slate-400 mb-12 max-w-2xl mx-auto">
-          I build modern web applications with cutting-edge technologies. 
-          Passionate about creating user experiences that matter.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link href="/#projects">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              View My Work
-            </Button>
-          </Link>
-          <Button variant="outline" size="lg">
-            Download Resume
-          </Button>
+    <section className="relative overflow-hidden">
+      {/* deep radial "blackhole" background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-1/3 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0.35)_25%,rgba(2,6,23,0.2)_45%,transparent_60%)] blur-2xl animate-spin-slower dark:opacity-100 opacity-60" />
+        {/* dark-mode color tint for the blackhole */}
+        <div className="absolute left-1/2 top-1/3 h-[920px] w-[920px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 dark:opacity-40 bg-[radial-gradient(closest-side,rgba(56,189,248,0.2),transparent_60%),radial-gradient(closest-side,rgba(147,51,234,0.18),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(1200px_700px_at_50%_-40%,rgba(2,132,199,0.1),transparent_70%),radial-gradient(1000px_600px_at_80%_85%,rgba(147,51,234,0.12),transparent_70%)]" />
+        {/* orbiting dots */}
+        <div className="orbit-layer" style={{ '--duration': '36s' } as React.CSSProperties}>
+          <span className="orbit-angle text-slate-400 dark:text-white" style={{ '--angle': '25deg' } as React.CSSProperties}>
+            <span className="orbit-dot" style={{ '--radius': '140px' } as React.CSSProperties} />
+          </span>
+        </div>
+        <div className="orbit-layer" style={{ '--duration': '24s' } as React.CSSProperties}>
+          <span className="orbit-angle text-slate-400 dark:text-white" style={{ '--angle': '210deg' } as React.CSSProperties}>
+            <span className="orbit-dot" style={{ '--radius': '200px' } as React.CSSProperties} />
+          </span>
+        </div>
+        <div className="orbit-layer" style={{ '--duration': '18s' } as React.CSSProperties}>
+          <span className="orbit-angle text-slate-400 dark:text-white" style={{ '--angle': '120deg' } as React.CSSProperties}>
+            <span className="orbit-dot" style={{ '--radius': '260px' } as React.CSSProperties} />
+          </span>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-24">
+
+        {/* center stage heading */}
+        <div className="mx-auto max-w-5xl text-center">
+
+          <h1 className="text-5xl leading-[1.05] tracking-[-0.02em] text-slate-950 dark:text-white md:text-7xl">
+            Building bridges between
+            <br className="hidden md:block" />
+            design and code
+          </h1>
+          <p className="mx-auto mt-6 max-w-3xl text-lg text-slate-800 dark:text-white/70 md:text-xl">
+            I craft intuitive user experiences with performance and polish. After hours, I build my own projects.
+          </p>
+
+          {/* CTA chip with avatar */}
+          <div className="mt-10 flex items-center justify-center animate-float-slow">
+            <Link href="/#about" className="group inline-flex items-center gap-3 rounded-full border border-slate-900/10 dark:border-white/10 ring-1 ring-slate-900/10 dark:ring-white/10 bg-gradient-to-r from-slate-900/15 to-purple-500/15 dark:from-white/10 dark:to-white/10 px-3 py-2 text-slate-900 dark:text-white backdrop-blur transition hover:from-slate-900/25 hover:to-purple-500/25 dark:hover:from-white/20 dark:hover:to-white/20 shadow-sm hover:shadow-md transform transition-transform hover:-translate-y-0.5">
+              <span className="relative h-8 w-8 overflow-hidden rounded-full">
+                {avatarUrl ? (
+                  <Image src={avatarUrl} alt={ownerName || 'Profile'} fill className="object-cover" />
+                ) : (
+                  <Image src="/next.svg" alt="avatar" fill className="object-contain p-1 invert dark:invert-0" />
+                )}
+              </span>
+              <span className="pr-1 text-sm">About – {ownerName || 'Selwyn Uy'}</span>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+
+          {/* social row using BrandIcon */}
+          {socialLinks.length > 0 && (
+            <div className="mt-8 flex items-center justify-center gap-5 text-slate-700 dark:text-white">
+              {socialLinks.map((link, idx) => {
+                const platform = (link.platform || '').toLowerCase()
+                // Prefer brand path override when available (e.g., LinkedIn fallback)
+                const name = platform.includes('github')
+                  ? 'siGithub'
+                  : platform.includes('linkedin')
+                  ? undefined
+                  : platform.includes('facebook')
+                  ? 'siFacebook'
+                  : 'siGlobe'
+                const hoverClass = platform.includes('github')
+                  ? 'hover:text-slate-900'
+                  : platform.includes('linkedin')
+                  ? 'hover:text-sky-600'
+                  : platform.includes('facebook')
+                  ? 'hover:text-sky-700'
+                  : 'hover:text-slate-900'
+                return (
+                  <a
+                    key={`${platform}-${idx}`}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={link.label || platform}
+                    className={`opacity-80 transition hover:opacity-100 ${hoverClass}`}
+                  >
+                    {platform.includes('linkedin') ? (
+                      <BrandIcon
+                        // Official LinkedIn glyph (fallback) from brand guidelines
+                        path="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.447-2.136 2.941v5.665H9.351V9h3.414v1.561h.049c.476-.9 1.637-1.852 3.368-1.852 3.602 0 4.267 2.371 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM6.934 20.452H3.736V9h3.198v11.452z"
+                        className="h-5 w-5"
+                      />
+                    ) : (
+                      <BrandIcon name={name as any} className="h-5 w-5" />
+                    )}
+                  </a>
+                )
+              })}
+            </div>
+          )}
         </div>
 
-        {socialLinks.length > 0 && (
-          <div className="mt-6 flex items-center justify-center gap-4">
-            {socialLinks.map((link, idx) => {
-              const platform = (link.platform || '').toLowerCase()
-              const Icon = platform.includes('github')
-                ? Github
-                : platform.includes('linkedin')
-                ? Linkedin
-                : platform.includes('facebook')
-                ? Facebook
-                : Globe
-              return (
-                <a
-                  key={`${platform}-${idx}`}
-                  href={link.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
-                  aria-label={link.label || platform}
-                >
-                  <Icon className="h-5 w-5" />
-                </a>
-              )
-            })}
-          </div>
-        )}
+        {/* info tiles */}
+        <div className="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-4 md:grid-cols-4">
+          {[
+            { label: 'Core Stack', value: 'Next.js + Supabase' },
+            { label: 'UI System', value: 'shadcn/ui + Tailwind' },
+            { label: 'Type Safety', value: 'TypeScript' },
+            { label: 'Deployed On', value: 'Vercel' },
+          ].map((item) => (
+            <div key={item.label} className="rounded-xl border border-slate-900/10 bg-slate-900/5 p-5 backdrop-blur dark:border-white/10 dark:bg-white/5">
+              <p className="text-sm text-slate-700 dark:text-white/60">{item.label}</p>
+              <p className="mt-1 font-semibold text-slate-900 dark:text-white">{item.value}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

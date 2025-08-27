@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function About() {
   return (
-    <section id="about" className="container mx-auto px-4 py-20">
+    <section id="about" className="container mx-auto px-4 py-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 dark:text-white mb-12">
           About Me
@@ -29,7 +29,7 @@ export function About() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <Card>
+            <Card className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
               <CardHeader>
                 <CardTitle className="text-lg">Frontend</CardTitle>
               </CardHeader>
@@ -39,7 +39,7 @@ export function About() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
               <CardHeader>
                 <CardTitle className="text-lg">Backend</CardTitle>
               </CardHeader>
@@ -49,7 +49,7 @@ export function About() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
               <CardHeader>
                 <CardTitle className="text-lg">Tools</CardTitle>
               </CardHeader>
@@ -59,7 +59,7 @@ export function About() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
               <CardHeader>
                 <CardTitle className="text-lg">Other</CardTitle>
               </CardHeader>
