@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { ImageUpload } from '@/components/image-upload'
+import { MediaUploader } from '@/components/media-uploader'
+import { getProjectMedia, upsertProjectMedia } from '@/lib/actions'
 import { Database } from '@/lib/database.types'
 import { createProject, updateProject } from '@/lib/actions'
 
@@ -38,6 +40,24 @@ export function ProjectForm({ userId, project, onSuccess }: ProjectFormProps) {
     featured: project?.featured || false
   })
 
+  const [mediaItems, setMediaItems] = useState<Array<{ id?: string; type: 'image' | 'video'; url: string }>>([])
+
+  // Load existing media when editing
+  useEffect(() => {
+    let isMounted = true
+    if (project) {
+      getProjectMedia(project.id)
+        .then((data) => {
+          if (!isMounted) return
+          setMediaItems(data.map((m) => ({ id: m.id, type: m.type, url: m.url })))
+        })
+        .catch(() => {})
+    } else {
+      setMediaItems([])
+    }
+    return () => { isMounted = false }
+  }, [project?.id])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -50,10 +70,16 @@ export function ProjectForm({ userId, project, onSuccess }: ProjectFormProps) {
         user_id: userId
       }
 
+      let saved = project
       if (project) {
-        await updateProject(project.id, projectData)
+        saved = await updateProject(project.id, projectData)
       } else {
-        await createProject(projectData)
+        saved = await createProject(projectData)
+      }
+
+      // Persist media list/order
+      if (saved) {
+        await upsertProjectMedia(saved.id, mediaItems)
       }
 
       onSuccess?.()
@@ -82,7 +108,7 @@ export function ProjectForm({ userId, project, onSuccess }: ProjectFormProps) {
             </div>
           )}
 
-          {/* Project Image */}
+          {/* Primary Project Image (thumbnail) */}
           <div className="space-y-4">
             <Label>Project Image</Label>
             <div className="flex items-center gap-4">
@@ -117,6 +143,17 @@ export function ProjectForm({ userId, project, onSuccess }: ProjectFormProps) {
             <p className="text-sm text-slate-500">
               Recommended size: 1200x630px. Max size: 5MB
             </p>
+          </div>
+
+          {/* Gallery Media */}
+          <div className="space-y-2">
+            <Label>Gallery</Label>
+            <p className="text-sm text-slate-500">Add multiple images. Use arrows to reorder. Click “Set cover” on an image to use it as the thumbnail.</p>
+            <MediaUploader 
+              items={mediaItems} 
+              onChange={setMediaItems}
+              onSetCover={(url) => setFormData({ ...formData, image_url: url })}
+            />
           </div>
 
           <div className="grid gap-2">

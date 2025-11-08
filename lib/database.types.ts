@@ -115,6 +115,32 @@ export interface Database {
           created_at?: string
         }
       }
+      project_media: {
+        Row: {
+          id: string
+          project_id: string
+          type: 'image' | 'video'
+          url: string
+          position: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          project_id: string
+          type: 'image' | 'video'
+          url: string
+          position?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          project_id?: string
+          type?: 'image' | 'video'
+          url?: string
+          position?: number
+          created_at?: string
+        }
+      }
       messages: {
         Row: {
           id: string

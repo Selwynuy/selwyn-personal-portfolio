@@ -28,6 +28,24 @@ export default async function Home({
     .order('created_at', { ascending: false })
     .limit(3)
 
+  // Fetch gallery media for these projects in one call
+  let projectsWithMedia = projects || []
+  if (projects && projects.length > 0) {
+    const ids = projects.map((p) => p.id)
+    const { data: media } = await supabase
+      .from('project_media')
+      .select('*')
+      .in('project_id', ids)
+      .order('position', { ascending: true })
+    const mediaByProject = new Map<string, any[]>()
+    ;(media || []).forEach((m) => {
+      const arr = mediaByProject.get(m.project_id) || []
+      arr.push(m)
+      mediaByProject.set(m.project_id, arr)
+    })
+    projectsWithMedia = projects.map((p) => ({ ...p, _media: mediaByProject.get(p.id) || [] }))
+  }
+
   // Fetch site owner (first admin) basic profile
   const { data: owner } = await supabase
     .from('profiles')
@@ -51,7 +69,7 @@ export default async function Home({
       <Hero socialLinks={socialLinks} avatarUrl={owner?.avatar_url || undefined} ownerName={owner?.full_name || undefined} />
       <SkillsMarquee />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
-      <ProjectsSection projects={projects || []} />
+      <ProjectsSection projects={projectsWithMedia || []} />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
       <About />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />

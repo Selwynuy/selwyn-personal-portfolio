@@ -6,6 +6,7 @@ import { Database } from './database.types'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Project = Database['public']['Tables']['projects']['Row']
+type ProjectMedia = Database['public']['Tables']['project_media']['Row']
 type Message = Database['public']['Tables']['messages']['Row']
 type SiteSettings = {
   id: boolean
@@ -290,6 +291,75 @@ export async function getProject(projectId: string) {
 
   if (error) throw error
   return data as Project
+}
+
+export async function getProjectMedia(projectId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('project_media')
+    .select('*')
+    .eq('project_id', projectId)
+    .order('position', { ascending: true })
+
+  if (error) throw error
+  return (data || []) as ProjectMedia[]
+}
+
+export async function upsertProjectMedia(projectId: string, media: Array<{ id?: string; type: 'image' | 'video'; url: string }>) {
+  const supabase = await createClient()
+
+  // Fetch existing
+  const { data: existing } = await supabase
+    .from('project_media')
+    .select('id')
+    .eq('project_id', projectId)
+
+  const existingIds = new Set((existing || []).map((m) => m.id))
+
+  // Prepare two lists: updates (with id) and inserts (without id)
+  const updates = media
+    .map((m, index) => ({ id: m.id, project_id: projectId, type: m.type, url: m.url, position: index }))
+    .filter((m): m is { id: string; project_id: string; type: 'image' | 'video'; url: string; position: number } => Boolean(m.id))
+
+  const inserts = media
+    .map((m, index) => ({ project_id: projectId, type: m.type, url: m.url, position: index }))
+    .filter((_, index) => !media[index].id)
+
+  // Apply updates (if any)
+  for (const batch of updates.length ? [updates] : []) {
+    const { error } = await supabase
+      .from('project_media')
+      .upsert(batch, { onConflict: 'id' })
+    if (error) throw error
+  }
+
+  // Apply inserts (without id field so DB default generates it)
+  if (inserts.length > 0) {
+    const { error } = await supabase
+      .from('project_media')
+      .insert(inserts)
+    if (error) throw error
+  }
+
+  // Delete removed
+  const keepIds = new Set(updates.map((m) => m.id))
+  const toDelete = [...existingIds].filter((id) => !keepIds.has(id))
+  if (toDelete.length > 0) {
+    const { error: delError } = await supabase
+      .from('project_media')
+      .delete()
+      .in('id', toDelete)
+    if (delError) throw delError
+  }
+
+  revalidatePath('/dashboard/projects')
+}
+
+export async function deleteProjectMedia(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('project_media').delete().eq('id', id)
+  if (error) throw error
+  revalidatePath('/dashboard/projects')
 }
 
 export async function createProject(project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) {
