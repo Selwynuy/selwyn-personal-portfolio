@@ -65,9 +65,14 @@ const pricingTiers = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="relative py-20 px-4 sm:px-6 lg:px-8">
+    <section id="pricing" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-50 via-white to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent dark:via-blue-500/10" />
+      {/* Gradient orbs for light mode */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-[20%] top-[15%] h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_70%)] blur-3xl" />
+        <div className="absolute right-[15%] bottom-[20%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.08)_0%,transparent_70%)] blur-3xl" />
+      </div>
 
       <div className="relative max-w-7xl mx-auto">
         {/* Section header */}
@@ -92,10 +97,10 @@ export function PricingSection() {
               }`}
             >
               <Card
-                className={`relative h-full flex flex-col transition-all duration-300 ${
+                className={`relative h-full flex flex-col transition-all duration-300 bg-white/80 backdrop-blur-sm dark:bg-slate-900/80 ${
                   tier.highlighted
-                    ? 'border-blue-500/50 shadow-xl shadow-blue-500/20 dark:border-purple-500/50 dark:shadow-purple-500/20'
-                    : 'border-slate-200 dark:border-slate-800 hover:shadow-lg'
+                    ? 'border-blue-300/60 shadow-xl shadow-blue-500/15 dark:border-purple-500/50 dark:shadow-purple-500/20'
+                    : 'border-blue-200/40 shadow-md shadow-slate-200/50 hover:shadow-lg hover:shadow-blue-200/30 dark:border-slate-800 dark:shadow-none dark:hover:shadow-lg'
                 }`}
               >
                 {tier.highlighted && (

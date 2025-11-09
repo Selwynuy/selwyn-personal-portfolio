@@ -39,10 +39,14 @@ const stats = [
 
 export function About() {
   return (
-    <section id="about" className="relative overflow-hidden py-24">
+    <section id="about" className="relative overflow-hidden py-24 bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900" />
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02] dark:opacity-[0.05]" />
+      {/* Gradient orbs for light mode */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute right-[15%] top-[10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.08)_0%,transparent_70%)] blur-3xl" />
+        <div className="absolute left-[10%] bottom-[15%] h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_70%)] blur-3xl" />
+      </div>
 
       <div className="container relative mx-auto px-4">
         <div className="mx-auto max-w-6xl">
@@ -65,7 +69,7 @@ export function About() {
           <div className="mb-16 grid gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Left Column - Story */}
             <div className="space-y-6">
-              <div className="rounded-2xl border border-slate-200 bg-white/50 p-8 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/50">
+              <div className="rounded-2xl border border-blue-200/50 bg-white/80 p-8 backdrop-blur-sm shadow-lg shadow-blue-500/5 dark:border-slate-800 dark:bg-slate-900/50 dark:shadow-none">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-2">
                     <Users className="h-5 w-5 text-white" />
@@ -103,11 +107,11 @@ export function About() {
               {skills.map((skill, index) => (
                 <div
                   key={skill.title}
-                  className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/80"
+                  className="group relative overflow-hidden rounded-2xl border border-blue-200/50 bg-gradient-to-br from-white to-blue-50/30 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 dark:border-slate-800 dark:bg-slate-900/80 dark:from-slate-900/80 dark:to-slate-900/80"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   {/* Gradient Background on Hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${skill.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`} />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${skill.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-8`} />
 
                   <div className="relative">
                     <div className={`mb-4 inline-flex rounded-xl bg-gradient-to-br ${skill.gradient} p-3 shadow-lg`}>
@@ -126,7 +130,7 @@ export function About() {
           </div>
 
           {/* Stats Section */}
-          <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-8 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
+          <div className="rounded-2xl border border-purple-200/50 bg-gradient-to-br from-white via-purple-50/30 to-blue-50/30 p-8 shadow-lg shadow-purple-500/5 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 dark:shadow-none">
             <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
               {stats.map((stat, index) => (
                 <div

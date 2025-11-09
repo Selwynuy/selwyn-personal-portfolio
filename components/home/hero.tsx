@@ -15,13 +15,17 @@ interface HeroProps {
 
 export function Hero({ socialLinks, avatarUrl, ownerName, resumeUrl }: HeroProps) {
   return (
-    <section className="relative overflow-hidden">
-      {/* deep radial "blackhole" background */}
+    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      {/* Animated gradient orbs for light mode */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/3 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0.35)_25%,rgba(2,6,23,0.2)_45%,transparent_60%)] blur-2xl animate-spin-slower dark:opacity-100 opacity-60" />
-        {/* dark-mode color tint for the blackhole */}
-        <div className="absolute left-1/2 top-1/3 h-[920px] w-[920px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 dark:opacity-40 bg-[radial-gradient(closest-side,rgba(56,189,248,0.2),transparent_60%),radial-gradient(closest-side,rgba(147,51,234,0.18),transparent_70%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(1200px_700px_at_50%_-40%,rgba(2,132,199,0.1),transparent_70%),radial-gradient(1000px_600px_at_80%_85%,rgba(147,51,234,0.12),transparent_70%)]" />
+        <div className="absolute left-1/2 top-1/3 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15)_0%,rgba(139,92,246,0.1)_50%,transparent_70%)] blur-3xl animate-spin-slower" />
+        <div className="absolute right-[10%] top-[20%] h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.12)_0%,rgba(59,130,246,0.08)_50%,transparent_70%)] blur-2xl" />
+        <div className="absolute left-[5%] bottom-[10%] h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.1)_0%,rgba(59,130,246,0.08)_50%,transparent_70%)] blur-3xl" />
+
+        {/* Dark mode backgrounds */}
+        <div className="absolute left-1/2 top-1/3 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0.35)_25%,rgba(2,6,23,0.2)_45%,transparent_60%)] blur-2xl animate-spin-slower dark:opacity-100 opacity-0" />
+        <div className="absolute left-1/2 top-1/3 h-[920px] w-[920px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-0 dark:opacity-40 bg-[radial-gradient(closest-side,rgba(56,189,248,0.2),transparent_60%),radial-gradient(closest-side,rgba(147,51,234,0.18),transparent_70%)]" />
+        <div className="absolute inset-0 opacity-0 dark:opacity-100 bg-[radial-gradient(1200px_700px_at_50%_-40%,rgba(2,132,199,0.1),transparent_70%),radial-gradient(1000px_600px_at_80%_85%,rgba(147,51,234,0.12),transparent_70%)]" />
         {/* orbiting dots */}
         <div className="orbit-layer" style={{ '--duration': '36s' } as React.CSSProperties}>
           <span className="orbit-angle text-slate-400 dark:text-white" style={{ '--angle': '25deg' } as React.CSSProperties}>
