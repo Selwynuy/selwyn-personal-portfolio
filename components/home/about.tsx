@@ -1,31 +1,32 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Code2, Palette, Rocket, Zap, Users, Award } from 'lucide-react'
+import { colors } from '@/lib/design-system'
 
 const skills = [
   {
     icon: Code2,
     title: 'Frontend Development',
     description: 'React, Next.js, TypeScript, Tailwind CSS',
-    gradient: 'from-blue-500 to-cyan-500',
+    gradient: 'from-blue-600 to-purple-600',
   },
   {
     icon: Zap,
     title: 'Backend Development',
     description: 'Node.js, Supabase, PostgreSQL, REST APIs',
-    gradient: 'from-purple-500 to-pink-500',
+    gradient: 'from-blue-600 to-purple-600',
   },
   {
     icon: Palette,
     title: 'UI/UX Design',
     description: 'Figma, Responsive Design, Accessibility',
-    gradient: 'from-orange-500 to-red-500',
+    gradient: 'from-blue-600 to-purple-600',
   },
   {
     icon: Rocket,
     title: 'DevOps & Tools',
     description: 'Git, Docker, CI/CD, Cloud Deployment',
-    gradient: 'from-green-500 to-emerald-500',
+    gradient: 'from-blue-600 to-purple-600',
   },
 ]
 
@@ -51,8 +52,8 @@ export function About({ resumeUrl }: AboutProps) {
         <div className="mx-auto max-w-6xl">
           {/* Header */}
           <div className="mb-16 text-center">
-            <div className="mb-4 inline-block rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 px-4 py-1.5">
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-sm font-semibold text-transparent dark:from-blue-400 dark:to-purple-400">
+            <div className="mb-4 inline-block rounded-full bg-gradient-to-r from-blue-600/10 to-purple-600/10 px-4 py-1.5">
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-sm font-semibold text-transparent dark:from-blue-500 dark:to-purple-500">
                 Get to know me
               </span>
             </div>
@@ -158,7 +159,7 @@ export function About({ resumeUrl }: AboutProps) {
                   className="text-center"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-bold text-transparent dark:from-blue-400 dark:to-purple-400 md:text-5xl">
+                  <div className="mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-bold text-transparent dark:from-blue-500 dark:to-purple-500 md:text-5xl">
                     {stat.value}
                   </div>
                   <div className="text-sm font-medium text-slate-600 dark:text-slate-400">

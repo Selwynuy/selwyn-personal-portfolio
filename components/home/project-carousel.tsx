@@ -33,10 +33,10 @@ export function ProjectCarousel({ title, media }: ProjectCarouselProps) {
 
   return (
     <div className="group relative">
-      <div className="relative rounded-[28px] p-[2px] bg-gradient-to-br from-purple-500/40 via-transparent to-sky-500/40">
+      <div className="relative rounded-[28px] p-[2px] bg-gradient-to-br from-blue-600/40 via-transparent to-purple-600/40">
         <div className="relative overflow-hidden rounded-[24px] bg-black/30 ring-1 ring-white/10 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.65)] transition-transform duration-700 ease-out skew-y-2 -rotate-[2deg] group-hover:skew-y-0 group-hover:rotate-0">
-            <div className="pointer-events-none absolute -left-24 top-1/4 h-64 w-64 rounded-full bg-purple-500/25 blur-3xl" />
-            <div className="pointer-events-none absolute -right-20 bottom-1/3 h-64 w-64 rounded-full bg-sky-500/25 blur-3xl" />
+            <div className="pointer-events-none absolute -left-24 top-1/4 h-64 w-64 rounded-full bg-blue-600/25 blur-3xl" />
+            <div className="pointer-events-none absolute -right-20 bottom-1/3 h-64 w-64 rounded-full bg-purple-600/25 blur-3xl" />
 
             <Carousel className="relative" setApi={setApi}>
               <CarouselContent>

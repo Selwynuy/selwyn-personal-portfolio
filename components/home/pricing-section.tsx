@@ -21,7 +21,7 @@ const pricingTiers = [
       'Basic analytics setup'
     ],
     highlighted: false,
-    color: 'from-blue-500/20 to-cyan-500/20'
+    color: 'from-blue-600/15 to-purple-600/15'
   },
   {
     name: 'Full Stack Application',
@@ -40,7 +40,7 @@ const pricingTiers = [
       '3 months free support'
     ],
     highlighted: true,
-    color: 'from-purple-500/20 to-pink-500/20'
+    color: 'from-blue-600/20 to-purple-600/20'
   },
   {
     name: 'Enterprise Solution',
@@ -59,7 +59,7 @@ const pricingTiers = [
       'Analytics & reporting'
     ],
     highlighted: false,
-    color: 'from-amber-500/20 to-orange-500/20'
+    color: 'from-blue-600/15 to-purple-600/15'
   }
 ]
 
@@ -72,7 +72,7 @@ export function PricingSection() {
       <div className="relative max-w-7xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 bg-clip-text text-transparent">
             Pricing Plans
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
@@ -94,12 +94,12 @@ export function PricingSection() {
               <Card
                 className={`relative h-full flex flex-col transition-all duration-300 ${
                   tier.highlighted
-                    ? 'border-purple-500/50 shadow-xl shadow-purple-500/20'
+                    ? 'border-blue-500/50 shadow-xl shadow-blue-500/20 dark:border-purple-500/50 dark:shadow-purple-500/20'
                     : 'border-slate-200 dark:border-slate-800 hover:shadow-lg'
                 }`}
               >
                 {tier.highlighted && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg z-10">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg z-10">
                     MOST POPULAR
                   </div>
                 )}
@@ -144,7 +144,7 @@ export function PricingSection() {
                   <Button
                     className={`w-full ${
                       tier.highlighted
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 dark:from-blue-500 dark:to-purple-500'
                         : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100'
                     }`}
                     size="lg"
