@@ -6,7 +6,7 @@ import { createClient } from '@/lib/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
-import { TrendingUp, FolderOpen, Mail, User, Edit, FileText, MessageSquare, Eye, Plus } from 'lucide-react'
+import { TrendingUp, FolderOpen, Mail, User, Edit, FileText, MessageSquare, Eye, Plus, Image as ImageIcon, BookOpen } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, now.getDate())
 
   // Fetch real data
-  const [projectsResult, messagesResult, profileResult, recentProjectsResult, oldProjectsResult] = await Promise.all([
+  const [projectsResult, messagesResult, profileResult, recentProjectsResult, oldProjectsResult, blogPostsResult, galleryItemsResult, siteSettingsResult] = await Promise.all([
     supabase
       .from('projects')
       .select('*')
@@ -50,7 +50,22 @@ export default async function DashboardPage() {
       .select('view_count, created_at')
       .eq('user_id', user.id)
       .lt('created_at', lastMonth.toISOString())
-      .gte('created_at', twoMonthsAgo.toISOString())
+      .gte('created_at', twoMonthsAgo.toISOString()),
+    // Blog posts
+    supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('user_id', user.id),
+    // Gallery items
+    supabase
+      .from('gallery_items')
+      .select('*')
+      .eq('user_id', user.id),
+    // Site settings
+    supabase
+      .from('site_settings')
+      .select('*')
+      .single()
   ])
 
   const projects = projectsResult.data || []
@@ -58,6 +73,9 @@ export default async function DashboardPage() {
   const profile = profileResult.data
   const recentProjects = recentProjectsResult.data || []
   const oldProjects = oldProjectsResult.data || []
+  const blogPosts = blogPostsResult.data || []
+  const galleryItems = galleryItemsResult.data || []
+  const siteSettings = siteSettingsResult.data
 
   // Calculate statistics
   const totalViews = projects.reduce((sum, project) => sum + (project.view_count || 0), 0)
@@ -65,6 +83,13 @@ export default async function DashboardPage() {
   const featuredProjects = projects.filter(p => p.featured)
   const unreadMessages = messages.filter(m => m.status === 'unread')
   const recentMessages = messages.slice(0, 3)
+
+  // Blog statistics
+  const publishedBlogPosts = blogPosts.filter(p => p.status === 'published')
+  const totalBlogViews = blogPosts.reduce((sum, post) => sum + (post.view_count || 0), 0)
+
+  // Gallery statistics
+  const publishedGalleryItems = galleryItems.filter(i => i.status === 'published')
 
   // Calculate real percentage changes based on actual data
   const currentMonthViews = recentProjects.reduce((sum, project) => sum + (project.view_count || 0), 0)
@@ -102,7 +127,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Views</CardTitle>
@@ -110,7 +135,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalViews.toLocaleString()}</div>
-            <p className="text-xs text-slate-600">{viewsChange} from last month</p>
+            <p className="text-xs text-slate-600">{viewsChange}</p>
           </CardContent>
         </Card>
         <Card>
@@ -121,7 +146,31 @@ export default async function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{projects.length}</div>
             <p className="text-xs text-slate-600">
-              {publishedProjects.length} published, {featuredProjects.length} featured
+              {publishedProjects.length} published
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Blog Posts</CardTitle>
+            <BookOpen className="h-4 w-4 text-slate-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{blogPosts.length}</div>
+            <p className="text-xs text-slate-600">
+              {publishedBlogPosts.length} published
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Gallery Items</CardTitle>
+            <ImageIcon className="h-4 w-4 text-slate-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{galleryItems.length}</div>
+            <p className="text-xs text-slate-600">
+              {publishedGalleryItems.length} published
             </p>
           </CardContent>
         </Card>
@@ -137,16 +186,12 @@ export default async function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Profile Status</CardTitle>
-            <User className="h-4 w-4 text-slate-600" />
+            <CardTitle className="text-sm font-medium">Blog Views</CardTitle>
+            <Eye className="h-4 w-4 text-slate-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {profile?.full_name ? 'Complete' : 'Incomplete'}
-            </div>
-            <p className="text-xs text-slate-600">
-              {profile?.full_name ? 'Profile ready' : 'Setup required'}
-            </p>
+            <div className="text-2xl font-bold">{totalBlogViews.toLocaleString()}</div>
+            <p className="text-xs text-slate-600">Total blog reads</p>
           </CardContent>
         </Card>
       </div>
@@ -195,8 +240,20 @@ export default async function DashboardPage() {
             </Link>
             <Link href="/dashboard/projects">
               <Button variant="outline" className="w-full justify-start">
-                <FileText className="w-4 h-4 mr-2" />
+                <FolderOpen className="w-4 h-4 mr-2" />
                 Manage Projects
+              </Button>
+            </Link>
+            <Link href="/dashboard/blog">
+              <Button variant="outline" className="w-full justify-start">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Manage Blog
+              </Button>
+            </Link>
+            <Link href="/dashboard/gallery">
+              <Button variant="outline" className="w-full justify-start">
+                <ImageIcon className="w-4 h-4 mr-2" />
+                Manage Gallery
               </Button>
             </Link>
             <Link href="/dashboard/messages">

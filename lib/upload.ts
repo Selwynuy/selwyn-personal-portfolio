@@ -3,10 +3,10 @@
 import { createClient } from '@/lib/server'
 import { v4 as uuidv4 } from 'uuid'
 
-export async function uploadImage(file: File, bucket: 'avatars' | 'projects' = 'projects') {
+export async function uploadImage(file: File, bucket: 'avatars' | 'projects' | 'resumes' = 'projects') {
   try {
     const supabase = await createClient()
-    
+
     // Generate a unique filename
     const fileExt = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExt}`
@@ -26,7 +26,7 @@ export async function uploadImage(file: File, bucket: 'avatars' | 'projects' = '
 
     return publicUrl
   } catch (error) {
-    console.error('Error uploading image:', error)
-    throw new Error('Failed to upload image')
+    console.error('Error uploading file:', error)
+    throw new Error('Failed to upload file')
   }
 }

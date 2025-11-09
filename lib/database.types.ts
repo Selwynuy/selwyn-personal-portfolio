@@ -176,6 +176,173 @@ export interface Database {
           created_at?: string
         }
       }
+      social_links: {
+        Row: {
+          id: string
+          user_id: string
+          platform: string
+          label: string | null
+          url: string
+          position: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          platform: string
+          label?: string | null
+          url: string
+          position?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          platform?: string
+          label?: string | null
+          url?: string
+          position?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      site_settings: {
+        Row: {
+          id: boolean
+          show_view_counts: boolean
+          show_featured_first: boolean
+          enable_blog: boolean
+          enable_gallery: boolean
+          meta_title: string | null
+          meta_description: string | null
+          resume_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          show_view_counts?: boolean
+          show_featured_first?: boolean
+          enable_blog?: boolean
+          enable_gallery?: boolean
+          meta_title?: string | null
+          meta_description?: string | null
+          resume_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          show_view_counts?: boolean
+          show_featured_first?: boolean
+          enable_blog?: boolean
+          enable_gallery?: boolean
+          meta_title?: string | null
+          meta_description?: string | null
+          resume_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      blog_posts: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          slug: string
+          excerpt: string | null
+          content: string
+          cover_image_url: string | null
+          status: 'draft' | 'published'
+          featured: boolean
+          tags: string[]
+          view_count: number
+          published_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          slug: string
+          excerpt?: string | null
+          content: string
+          cover_image_url?: string | null
+          status?: 'draft' | 'published'
+          featured?: boolean
+          tags?: string[]
+          view_count?: number
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          slug?: string
+          excerpt?: string | null
+          content?: string
+          cover_image_url?: string | null
+          status?: 'draft' | 'published'
+          featured?: boolean
+          tags?: string[]
+          view_count?: number
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      gallery_items: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string | null
+          image_url: string
+          thumbnail_url: string | null
+          category: string | null
+          tags: string[]
+          position: number
+          featured: boolean
+          status: 'draft' | 'published'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          description?: string | null
+          image_url: string
+          thumbnail_url?: string | null
+          category?: string | null
+          tags?: string[]
+          position?: number
+          featured?: boolean
+          status?: 'draft' | 'published'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          description?: string | null
+          image_url?: string
+          thumbnail_url?: string | null
+          category?: string | null
+          tags?: string[]
+          position?: number
+          featured?: boolean
+          status?: 'draft' | 'published'
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Functions: {
       increment_view_count: {

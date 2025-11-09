@@ -39,3 +39,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# supabase
+/supabase/
+.supabase/
+
+# claude code
+.claude/
+
+# migration and setup files
+*MIGRATION*.sql
+APPLY_*.sql
+FIX_*.sql
+*.md.backup
+
+# documentation files (development notes)
+ADMIN_DASHBOARD_COMPLETE.md
+BLOG_GALLERY_IMPLEMENTATION.md
+IMPLEMENTATION_COMPLETE.md
+MIGRATION_GUIDE.md

@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { createProfile } from '@/lib/actions'
 import { LogoutButton } from '@/components/logout-button'
-import { BarChart3, FolderOpen, Mail, Settings, Menu } from 'lucide-react'
+import { BarChart3, FolderOpen, Mail, Settings, Menu, FileText, Image, Home } from 'lucide-react'
 
 // Navigation items
 const navItems = [
@@ -21,6 +21,16 @@ const navItems = [
     title: "Projects",
     href: "/dashboard/projects",
     icon: FolderOpen
+  },
+  {
+    title: "Blog",
+    href: "/dashboard/blog",
+    icon: FileText
+  },
+  {
+    title: "Gallery",
+    href: "/dashboard/gallery",
+    icon: Image
   },
   {
     title: "Messages",
@@ -70,8 +80,9 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 flex-col border-r bg-white dark:bg-slate-800">
         <div className="flex h-14 items-center border-b px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-lg font-semibold">Portfolio Admin</span>
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <Home className="h-5 w-5" />
+            <span className="text-lg font-semibold">Home</span>
           </Link>
         </div>
         <ScrollArea className="flex-1">
@@ -117,8 +128,9 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
             <div className="flex h-14 items-center border-b px-4 py-4">
-              <Link href="/" className="flex items-center gap-2">
-                <span className="text-lg font-semibold">Portfolio Admin</span>
+              <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <Home className="h-5 w-5" />
+                <span className="text-lg font-semibold">Home</span>
               </Link>
             </div>
             <ScrollArea className="h-[calc(100vh-8rem)]">
@@ -154,7 +166,10 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
             </div>
           </SheetContent>
         </Sheet>
-        <div className="ml-4 text-lg font-semibold">Portfolio Admin</div>
+        <Link href="/" className="ml-4 text-lg font-semibold hover:opacity-80 transition-opacity flex items-center gap-2">
+          <Home className="h-5 w-5" />
+          Home
+        </Link>
       </div>
 
       {/* Main Content */}

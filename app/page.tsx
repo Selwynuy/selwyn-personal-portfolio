@@ -7,6 +7,9 @@ import { ProjectsSection } from '@/components/home/projects-section'
 import { ContactSection } from '@/components/home/contact-section'
 import { SiteFooter } from '@/components/home/site-footer'
 import { SkillsMarquee } from '@/components/home/skills-marquee'
+import { BlogSection } from '@/components/home/blog-section'
+import { GallerySection } from '@/components/home/gallery-section'
+import { PricingSection } from '@/components/home/pricing-section'
 
 export default async function Home({
   searchParams,
@@ -64,6 +67,36 @@ export default async function Home({
     socialLinks = data || []
   }
 
+  // Fetch site settings to check if blog/gallery are enabled and get resume URL
+  const { data: siteSettings } = await supabase
+    .from('site_settings')
+    .select('enable_blog, enable_gallery, resume_url')
+    .single()
+
+  // Fetch blog posts only if enabled
+  let blogPosts = null
+  if (siteSettings?.enable_blog) {
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .limit(3)
+    blogPosts = data
+  }
+
+  // Fetch gallery items only if enabled
+  let galleryItems = null
+  if (siteSettings?.enable_gallery) {
+    const { data } = await supabase
+      .from('gallery_items')
+      .select('*')
+      .eq('status', 'published')
+      .order('position', { ascending: true })
+      .limit(6)
+    galleryItems = data
+  }
+
   return (
     <div className="min-h-screen bg-transparent dark:bg-transparent">
       <Hero socialLinks={socialLinks} avatarUrl={owner?.avatar_url || undefined} ownerName={owner?.full_name || undefined} />
@@ -71,10 +104,20 @@ export default async function Home({
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
       <ProjectsSection projects={projectsWithMedia || []} />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
-      <About />
+      <About resumeUrl={siteSettings?.resume_url || undefined} />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
+      <BlogSection posts={blogPosts || []} />
+      {(blogPosts && blogPosts.length > 0) && (
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
+      )}
+      <GallerySection items={galleryItems || []} />
+      {(galleryItems && galleryItems.length > 0) && (
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
+      )}
+      <PricingSection />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
       <ContactSection userId={user?.id ?? null} />
-      <SiteFooter />
+      <SiteFooter socialLinks={socialLinks} ownerName={owner?.full_name || 'Selwyn'} />
     </div>
   )
 }

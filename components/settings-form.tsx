@@ -25,8 +25,10 @@ interface SettingsFormProps {
     show_view_counts: boolean
     show_featured_first: boolean
     enable_blog: boolean
+    enable_gallery: boolean
     meta_title: string | null
     meta_description: string | null
+    resume_url: string | null
   } | null
   isAdmin?: boolean
 }
@@ -37,6 +39,7 @@ export function SettingsForm({ user, profile, siteSettings, isAdmin = false }: S
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || user?.user_metadata?.avatar_url)
+  const [resumeUrl, setResumeUrl] = useState(siteSettings?.resume_url || '')
 
   const [formData, setFormData] = useState({
     full_name: profile?.full_name || user?.user_metadata?.full_name || '',
@@ -48,6 +51,7 @@ export function SettingsForm({ user, profile, siteSettings, isAdmin = false }: S
     show_view_counts: siteSettings?.show_view_counts ?? true,
     show_featured_first: siteSettings?.show_featured_first ?? true,
     enable_blog: siteSettings?.enable_blog ?? false,
+    enable_gallery: siteSettings?.enable_gallery ?? false,
     meta_title: siteSettings?.meta_title || '',
     meta_description: siteSettings?.meta_description || ''
   })
@@ -71,13 +75,22 @@ export function SettingsForm({ user, profile, siteSettings, isAdmin = false }: S
       
       // If admin, also persist site settings (singleton)
       if (isAdmin) {
-        await updateSiteSettings({
-          show_view_counts: formData.show_view_counts,
-          show_featured_first: formData.show_featured_first,
-          enable_blog: formData.enable_blog,
-          meta_title: formData.meta_title || null,
-          meta_description: formData.meta_description || null,
-        })
+        console.log('Attempting to save site settings with resume_url:', resumeUrl)
+        try {
+          await updateSiteSettings({
+            show_view_counts: formData.show_view_counts,
+            show_featured_first: formData.show_featured_first,
+            enable_blog: formData.enable_blog,
+            enable_gallery: formData.enable_gallery,
+            meta_title: formData.meta_title || null,
+            meta_description: formData.meta_description || null,
+            resume_url: resumeUrl || null,
+          })
+          console.log('Site settings saved successfully')
+        } catch (settingsError) {
+          console.error('Error saving site settings:', settingsError)
+          throw new Error(`Failed to save site settings: ${settingsError instanceof Error ? settingsError.message : 'Unknown error'}`)
+        }
       }
       
       setSuccess(true)
@@ -218,6 +231,46 @@ export function SettingsForm({ user, profile, siteSettings, isAdmin = false }: S
                   checked={formData.enable_blog}
                   onCheckedChange={enable_blog => setFormData({ ...formData, enable_blog })}
                 />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Gallery Section</Label>
+                  <p className="text-sm text-slate-500">Enable gallery section on portfolio</p>
+                </div>
+                <Switch
+                  checked={formData.enable_gallery}
+                  onCheckedChange={enable_gallery => setFormData({ ...formData, enable_gallery })}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Resume/CV</CardTitle>
+              <CardDescription>Upload your resume or CV for visitors to download.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-2">
+                <Label>Resume File (PDF)</Label>
+                <ImageUpload
+                  bucket="resumes"
+                  onUpload={url => setResumeUrl(url)}
+                  accept="application/pdf"
+                />
+                {resumeUrl && (
+                  <div className="mt-2 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                    <span>Current resume:</span>
+                    <a
+                      href={resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline dark:text-blue-400"
+                    >
+                      View PDF
+                    </a>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

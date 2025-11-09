@@ -13,8 +13,10 @@ type SiteSettings = {
   show_view_counts: boolean
   show_featured_first: boolean
   enable_blog: boolean
+  enable_gallery: boolean
   meta_title: string | null
   meta_description: string | null
+  resume_url: string | null
   updated_at?: string
   created_at?: string
 }
@@ -76,27 +78,42 @@ export async function getSiteSettings() {
 export async function updateSiteSettings(settings: Partial<SiteSettings>) {
   const supabase = await createClient()
 
+  console.log('updateSiteSettings called with:', settings)
+
   // Prefer RPC if available; fallback to direct update
   let rpcError: unknown = null
   try {
     const { data, error } = await supabase.rpc('update_site_settings', { p: settings as unknown as Record<string, unknown> })
     if (error) rpcError = error
     if (!rpcError) {
+      console.log('Site settings updated via RPC successfully')
       revalidatePath('/dashboard/settings')
       return data as SiteSettings
     }
   } catch (e) {
     rpcError = e
+    console.log('RPC failed, falling back to direct update:', e)
   }
+
+  console.log('Attempting direct update to site_settings table')
+  const updatePayload = { ...settings, updated_at: new Date().toISOString() }
+  console.log('Update payload:', updatePayload)
 
   const { data, error } = await supabase
     .from('site_settings')
-    .update({ ...settings, updated_at: new Date().toISOString() })
+    .update(updatePayload)
     .eq('id', true)
     .select()
     .single()
 
-  if (error) throw error
+  if (error) {
+    console.error('Direct update failed:', error)
+    throw error
+  }
+
+  console.log('Site settings updated successfully. Returned data:', data)
+  console.log('Check if resume_url is in returned data:', data?.resume_url)
+
   revalidatePath('/dashboard/settings')
   return data as SiteSettings
 }
@@ -458,4 +475,195 @@ export async function incrementProjectViews(projectId: string) {
     .rpc('increment_view_count', { project_id: projectId })
 
   if (error) throw error
+}
+
+// Blog Actions
+type BlogPost = Database['public']['Tables']['blog_posts']['Row']
+
+export async function getBlogPosts(userId: string, includeUnpublished = false) {
+  const supabase = await createClient()
+  let query = supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('user_id', userId)
+
+  if (!includeUnpublished) {
+    query = query.eq('status', 'published')
+  }
+
+  const { data, error } = await query.order('published_at', { ascending: false, nullsFirst: false })
+
+  if (error) throw error
+  return data as BlogPost[]
+}
+
+export async function getPublicBlogPosts(limit?: number) {
+  const supabase = await createClient()
+  let query = supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false, nullsFirst: false })
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  const { data, error } = await query
+
+  if (error) throw error
+  return data as BlogPost[]
+}
+
+export async function getBlogPost(slug: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  if (error) throw error
+  return data as BlogPost
+}
+
+export async function createBlogPost(post: Omit<BlogPost, 'id' | 'created_at' | 'updated_at' | 'view_count' | 'published_at'>) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .insert(post)
+    .select()
+    .single()
+
+  if (error) throw error
+  revalidatePath('/dashboard/blog')
+  revalidatePath('/')
+  return data as BlogPost
+}
+
+export async function updateBlogPost(postId: string, post: Partial<BlogPost>) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .update(post)
+    .eq('id', postId)
+    .select()
+    .single()
+
+  if (error) throw error
+  revalidatePath('/dashboard/blog')
+  revalidatePath('/')
+  revalidatePath(`/blog/${post.slug}`)
+  return data as BlogPost
+}
+
+export async function deleteBlogPost(postId: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('blog_posts')
+    .delete()
+    .eq('id', postId)
+
+  if (error) throw error
+  revalidatePath('/dashboard/blog')
+  revalidatePath('/')
+}
+
+export async function incrementBlogViews(postId: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .rpc('increment_blog_view_count', { post_id: postId })
+
+  if (error) throw error
+}
+
+// Gallery Actions
+type GalleryItem = Database['public']['Tables']['gallery_items']['Row']
+
+export async function getGalleryItems(userId: string, includeUnpublished = false) {
+  const supabase = await createClient()
+  let query = supabase
+    .from('gallery_items')
+    .select('*')
+    .eq('user_id', userId)
+
+  if (!includeUnpublished) {
+    query = query.eq('status', 'published')
+  }
+
+  const { data, error } = await query.order('position', { ascending: true })
+
+  if (error) throw error
+  return data as GalleryItem[]
+}
+
+export async function getPublicGalleryItems(limit?: number) {
+  const supabase = await createClient()
+  let query = supabase
+    .from('gallery_items')
+    .select('*')
+    .eq('status', 'published')
+    .order('position', { ascending: true })
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  const { data, error } = await query
+
+  if (error) throw error
+  return data as GalleryItem[]
+}
+
+export async function getGalleryItem(itemId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('gallery_items')
+    .select('*')
+    .eq('id', itemId)
+    .single()
+
+  if (error) throw error
+  return data as GalleryItem
+}
+
+export async function createGalleryItem(item: Omit<GalleryItem, 'id' | 'created_at' | 'updated_at'>) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('gallery_items')
+    .insert(item)
+    .select()
+    .single()
+
+  if (error) throw error
+  revalidatePath('/dashboard/gallery')
+  revalidatePath('/')
+  return data as GalleryItem
+}
+
+export async function updateGalleryItem(itemId: string, item: Partial<GalleryItem>) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('gallery_items')
+    .update(item)
+    .eq('id', itemId)
+    .select()
+    .single()
+
+  if (error) throw error
+  revalidatePath('/dashboard/gallery')
+  revalidatePath('/')
+  return data as GalleryItem
+}
+
+export async function deleteGalleryItem(itemId: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('gallery_items')
+    .delete()
+    .eq('id', itemId)
+
+  if (error) throw error
+  revalidatePath('/dashboard/gallery')
+  revalidatePath('/')
 }

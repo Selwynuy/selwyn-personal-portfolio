@@ -18,7 +18,12 @@ import {
 import { createClient } from '@/lib/client'
 import { useEffect, useState } from 'react'
 
-export function Navbar() {
+interface NavbarProps {
+  enableBlog?: boolean
+  enableGallery?: boolean
+}
+
+export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProps = {}) {
   const pathname = usePathname()
   const isHomePage = pathname === '/'
   const [user, setUser] = useState<any>(null)
@@ -131,14 +136,18 @@ export function Navbar() {
                 <Grid2x2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Work</span>
               </Link>
-              <Link href="/#blog" className="flex items-center gap-2 rounded-full px-3 py-1 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
-                <FileText className="h-4 w-4" />
-                <span className="hidden sm:inline">Blog</span>
-              </Link>
-              <Link href="/#gallery" className="flex items-center gap-2 rounded-full px-3 py-1 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
-                <ImageIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">Gallery</span>
-              </Link>
+              {enableBlog && (
+                <Link href="/blog" className="flex items-center gap-2 rounded-full px-3 py-1 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
+                  <FileText className="h-4 w-4" />
+                  <span className="hidden sm:inline">Blog</span>
+                </Link>
+              )}
+              {enableGallery && (
+                <Link href="/gallery" className="flex items-center gap-2 rounded-full px-3 py-1 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
+                  <ImageIcon className="h-4 w-4" />
+                  <span className="hidden sm:inline">Gallery</span>
+                </Link>
+              )}
             </div>
             <div className="mr-1 flex items-center gap-2 pl-2">
               <ThemeToggle />
