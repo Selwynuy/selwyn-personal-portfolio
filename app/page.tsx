@@ -99,12 +99,17 @@ export default async function Home({
 
   return (
     <div className="min-h-screen bg-transparent dark:bg-transparent">
-      <Hero socialLinks={socialLinks} avatarUrl={owner?.avatar_url || undefined} ownerName={owner?.full_name || undefined} />
+      <Hero
+        socialLinks={socialLinks}
+        avatarUrl={owner?.avatar_url || undefined}
+        ownerName={owner?.full_name || undefined}
+        resumeUrl={siteSettings?.resume_url || undefined}
+      />
       <SkillsMarquee />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
       <ProjectsSection projects={projectsWithMedia || []} />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
-      <About resumeUrl={siteSettings?.resume_url || undefined} />
+      <About />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/60 to-transparent dark:via-white/10" />
       <BlogSection posts={blogPosts || []} />
       {(blogPosts && blogPosts.length > 0) && (

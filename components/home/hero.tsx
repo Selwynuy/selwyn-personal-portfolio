@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, FileText } from 'lucide-react'
 import { BrandIcon } from '@/components/ui/brand-icon'
 
 type SocialLink = { platform: string; url: string; label: string | null }
@@ -10,9 +10,10 @@ interface HeroProps {
   socialLinks: SocialLink[]
   avatarUrl?: string
   ownerName?: string
+  resumeUrl?: string
 }
 
-export function Hero({ socialLinks, avatarUrl, ownerName }: HeroProps) {
+export function Hero({ socialLinks, avatarUrl, ownerName, resumeUrl }: HeroProps) {
   return (
     <section className="relative overflow-hidden">
       {/* deep radial "blackhole" background */}
@@ -53,8 +54,8 @@ export function Hero({ socialLinks, avatarUrl, ownerName }: HeroProps) {
             I craft intuitive user experiences with performance and polish. After hours, I build my own projects.
           </p>
 
-          {/* CTA chip with avatar */}
-          <div className="mt-10 flex items-center justify-center animate-float-slow">
+          {/* CTA chips */}
+          <div className="mt-10 flex items-center justify-center gap-4 flex-wrap animate-float-slow">
             <Link href="/#about" className="group inline-flex items-center gap-3 rounded-full border border-slate-900/10 dark:border-white/10 ring-1 ring-slate-900/10 dark:ring-white/10 bg-gradient-to-r from-slate-900/15 to-purple-500/15 dark:from-white/10 dark:to-white/10 px-3 py-2 text-slate-900 dark:text-white backdrop-blur transition hover:from-slate-900/25 hover:to-purple-500/25 dark:hover:from-white/20 dark:hover:to-white/20 shadow-sm hover:shadow-md transform transition-transform hover:-translate-y-0.5">
               <span className="relative h-8 w-8 overflow-hidden rounded-full">
                 {avatarUrl ? (
@@ -66,6 +67,16 @@ export function Hero({ socialLinks, avatarUrl, ownerName }: HeroProps) {
               <span className="pr-1 text-sm">About – {ownerName || 'Selwyn Uy'}</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
+
+            {resumeUrl && (
+              <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 rounded-full border border-blue-600/20 dark:border-purple-600/20 ring-1 ring-blue-600/20 dark:ring-purple-600/20 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-500/10 dark:to-purple-500/10 px-3 py-2 text-slate-900 dark:text-white backdrop-blur transition hover:from-blue-600/20 hover:to-purple-600/20 dark:hover:from-blue-500/20 dark:hover:to-purple-500/20 shadow-sm hover:shadow-md transform transition-transform hover:-translate-y-0.5">
+                <span className="relative h-8 w-8 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500">
+                  <FileText className="h-4 w-4 text-white" />
+                </span>
+                <span className="pr-1 text-sm">View Resume</span>
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+            )}
           </div>
 
           {/* social row using BrandIcon */}

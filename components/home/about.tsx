@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Code2, Palette, Rocket, Zap, Users, Award } from 'lucide-react'
+import { Code2, Palette, Rocket, Zap, Users } from 'lucide-react'
 import { colors } from '@/lib/design-system'
 
 const skills = [
@@ -37,11 +37,7 @@ const stats = [
   { label: 'Code Commits', value: '10K+' },
 ]
 
-interface AboutProps {
-  resumeUrl?: string
-}
-
-export function About({ resumeUrl }: AboutProps) {
+export function About() {
   return (
     <section id="about" className="relative overflow-hidden py-24">
       {/* Background Effects */}
@@ -89,33 +85,12 @@ export function About({ resumeUrl }: AboutProps) {
                 </p>
               </div>
 
-              {/* Action Buttons */}
+              {/* Action Button */}
               <div className="flex flex-wrap gap-4">
-                {resumeUrl ? (
-                  <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
-                    <Button
-                      size="lg"
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 dark:from-blue-500 dark:to-purple-500"
-                    >
-                      <Award className="mr-2 h-4 w-4" />
-                      View Resume
-                    </Button>
-                  </a>
-                ) : (
-                  <Button
-                    size="lg"
-                    disabled
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white opacity-50 cursor-not-allowed"
-                  >
-                    <Award className="mr-2 h-4 w-4" />
-                    View Resume
-                  </Button>
-                )}
                 <Link href="/#contact">
                   <Button
                     size="lg"
-                    variant="outline"
-                    className="border-slate-300 dark:border-slate-700"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 dark:from-blue-500 dark:to-purple-500"
                   >
                     Contact Me
                   </Button>
