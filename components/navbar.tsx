@@ -119,7 +119,7 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
   console.log('Navbar: showUserDropdown:', showUserDropdown, 'user:', !!user, 'loading:', loading)
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full">
       <div className="container mx-auto px-4 pt-4">
         <div className="flex items-center justify-center">
           <nav className="flex w-full max-w-4xl items-center justify-between gap-2 rounded-full border border-slate-900/10 ring-1 ring-slate-900/10 bg-gradient-to-r from-slate-900/5 via-purple-500/5 to-slate-900/5 px-2 py-1 backdrop-blur supports-[backdrop-filter]:bg-slate-900/5 dark:border-white/10 dark:bg-white/10 dark:ring-white/10">
