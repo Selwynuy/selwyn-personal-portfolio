@@ -44,7 +44,7 @@ export function Hero({ socialLinks, avatarUrl, ownerName, resumeUrl }: HeroProps
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-24">
+      <div className="container mx-auto px-4 pt-32 pb-24">
 
         {/* center stage heading */}
         <div className="mx-auto max-w-5xl text-center">
