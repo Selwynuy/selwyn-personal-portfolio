@@ -15,12 +15,12 @@ interface HeroProps {
 
 export function Hero({ socialLinks, avatarUrl, ownerName, resumeUrl }: HeroProps) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <section className="relative overflow-hidden bg-gradient-to-br from-blue-100 via-purple-100 to-cyan-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Animated gradient orbs for light mode */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/3 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15)_0%,rgba(139,92,246,0.1)_50%,transparent_70%)] blur-3xl animate-spin-slower" />
-        <div className="absolute right-[10%] top-[20%] h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.12)_0%,rgba(59,130,246,0.08)_50%,transparent_70%)] blur-2xl" />
-        <div className="absolute left-[5%] bottom-[10%] h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.1)_0%,rgba(59,130,246,0.08)_50%,transparent_70%)] blur-3xl" />
+        <div className="absolute left-1/2 top-1/3 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.3)_0%,rgba(139,92,246,0.2)_50%,transparent_70%)] blur-3xl animate-spin-slower" />
+        <div className="absolute right-[10%] top-[20%] h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.25)_0%,rgba(59,130,246,0.15)_50%,transparent_70%)] blur-2xl" />
+        <div className="absolute left-[5%] bottom-[10%] h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.2)_0%,rgba(59,130,246,0.15)_50%,transparent_70%)] blur-3xl" />
 
         {/* Dark mode backgrounds */}
         <div className="absolute left-1/2 top-1/3 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0.35)_25%,rgba(2,6,23,0.2)_45%,transparent_60%)] blur-2xl animate-spin-slower dark:opacity-100 opacity-0" />

@@ -122,7 +122,7 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
     <header className="fixed top-0 left-0 right-0 z-50 w-full">
       <div className="container mx-auto px-4 pt-4">
         <div className="flex items-center justify-center">
-          <nav className="flex w-full max-w-4xl items-center justify-between gap-2 rounded-full border border-slate-900/10 ring-1 ring-slate-900/10 bg-gradient-to-r from-slate-900/5 via-purple-500/5 to-slate-900/5 px-2 py-1 backdrop-blur supports-[backdrop-filter]:bg-slate-900/5 dark:border-white/10 dark:bg-white/10 dark:ring-white/10">
+          <nav className="flex w-full max-w-4xl items-center justify-between gap-2 rounded-full border border-blue-300/50 ring-1 ring-purple-300/30 bg-gradient-to-r from-blue-100/80 via-purple-100/80 to-blue-100/80 px-2 py-1 backdrop-blur-xl shadow-lg shadow-blue-500/10 supports-[backdrop-filter]:bg-white/80 dark:border-white/10 dark:bg-white/10 dark:ring-white/10 dark:shadow-none dark:from-transparent dark:via-transparent dark:to-transparent">
             <Link href="/" className="ml-1 flex items-center gap-2 rounded-full px-3 py-1 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-100/90">
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Home</span>
