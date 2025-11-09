@@ -1,6 +1,4 @@
-import { Suspense } from 'react'
 import { createClient } from '@/lib/server'
-import Link from 'next/link'
 import { Hero } from '@/components/home/hero'
 import { About } from '@/components/home/about'
 import { ProjectsSection } from '@/components/home/projects-section'
@@ -11,16 +9,9 @@ import { BlogSection } from '@/components/home/blog-section'
 import { GallerySection } from '@/components/home/gallery-section'
 import { PricingSection } from '@/components/home/pricing-section'
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>
-}) {
+export default async function Home() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
-  // Await searchParams in Next.js 15
-  const params = await searchParams
 
   // Fetch featured projects
   const { data: projects } = await supabase
@@ -40,7 +31,7 @@ export default async function Home({
       .select('*')
       .in('project_id', ids)
       .order('position', { ascending: true })
-    const mediaByProject = new Map<string, any[]>()
+    const mediaByProject = new Map<string, Array<Record<string, unknown>>>()
     ;(media || []).forEach((m) => {
       const arr = mediaByProject.get(m.project_id) || []
       arr.push(m)

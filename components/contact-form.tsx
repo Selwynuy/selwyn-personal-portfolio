@@ -130,7 +130,7 @@ export function ContactForm({ userId }: ContactFormProps) {
 
       {success && (
         <div className="bg-green-50 text-green-700 p-3 rounded-md text-sm animate-in fade-in slide-in-from-top-1">
-          Your message has been sent successfully! I'll get back to you soon.
+          Your message has been sent successfully! I&apos;ll get back to you soon.
         </div>
       )}
 

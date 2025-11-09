@@ -1,10 +1,18 @@
 import { Suspense } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ProjectCardSkeleton } from '@/components/project-card-skeleton'
 import { ProjectCarousel } from '@/components/home/project-carousel'
 
 type Project = {
   id: string
+  _media?: Array<{ type: string; url: string }>
+  image_url?: string
+  url?: string
+  live_url?: string
+  repo_url?: string
+  title?: string
+  name?: string
+  short_description?: string
+  tech_stack?: string[]
 }
 
 interface ProjectsSectionProps {
@@ -30,9 +38,9 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
               </>
             }
           >
-            {projects?.map((project: any, idx: number) => {
+            {projects?.map((project: Project, idx: number) => {
               const gallery = Array.isArray(project._media)
-                ? project._media.map((m: any) => (m.type === 'image' ? { image: m.url } : { video: m.url }))
+                ? project._media.map((m) => (m.type === 'image' ? { image: m.url } : { video: m.url }))
                 : []
               const fallback = (project.image_url
                 ? [{ image: project.image_url }]

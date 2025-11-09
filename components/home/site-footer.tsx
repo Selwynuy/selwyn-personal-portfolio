@@ -63,14 +63,18 @@ export function SiteFooter({ socialLinks = [], ownerName = 'Selwyn' }: SiteFoote
               {socialLinks.length > 0 ? (
                 socialLinks.slice(0, 4).map((link, idx) => {
                   const platform = (link.platform || '').toLowerCase()
-                  // Map to BrandIcon names (same as Hero)
                   const name = platform.includes('github')
                     ? 'siGithub'
-                    : platform.includes('linkedin')
-                    ? undefined
                     : platform.includes('facebook')
                     ? 'siFacebook'
-                    : 'siGlobe'
+                    : undefined
+                  const customPath = platform.includes('linkedin')
+                    // Official LinkedIn glyph from brand guidelines
+                    ? "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.447-2.136 2.941v5.665H9.351V9h3.414v1.561h.049c.476-.9 1.637-1.852 3.368-1.852 3.602 0 4.267 2.371 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM6.934 20.452H3.736V9h3.198v11.452z"
+                    : !name
+                    // Generic globe icon for unknown platforms
+                    ? "M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                    : undefined
                   const hoverClass = platform.includes('github')
                     ? 'hover:text-slate-900 dark:hover:text-slate-100'
                     : platform.includes('linkedin')
@@ -87,15 +91,7 @@ export function SiteFooter({ socialLinks = [], ownerName = 'Selwyn' }: SiteFoote
                       className={`group flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white transition-all dark:border-slate-800 dark:bg-slate-900 ${hoverClass}`}
                       aria-label={link.label || platform}
                     >
-                      {platform.includes('linkedin') ? (
-                        <BrandIcon
-                          // Official LinkedIn glyph (fallback) from brand guidelines
-                          path="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.447-2.136 2.941v5.665H9.351V9h3.414v1.561h.049c.476-.9 1.637-1.852 3.368-1.852 3.602 0 4.267 2.371 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM6.934 20.452H3.736V9h3.198v11.452z"
-                          className="h-5 w-5 text-slate-600 transition-colors dark:text-slate-400"
-                        />
-                      ) : (
-                        <BrandIcon name={name as any} className="h-5 w-5 text-slate-600 transition-colors dark:text-slate-400" />
-                      )}
+                      <BrandIcon name={name} path={customPath} className="h-5 w-5 text-slate-600 transition-colors dark:text-slate-400" />
                     </a>
                   )
                 })
@@ -113,7 +109,7 @@ export function SiteFooter({ socialLinks = [], ownerName = 'Selwyn' }: SiteFoote
               Get in Touch
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Have a project in mind? Let's work together to bring your ideas to life.
+              Have a project in mind? Let&apos;s work together to bring your ideas to life.
             </p>
             <Link href="/#contact">
               <button className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30 dark:from-blue-500 dark:to-purple-500">

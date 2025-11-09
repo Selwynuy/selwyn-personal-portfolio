@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/client'
+import { Database } from '@/lib/database.types'
+
+type Profile = Database['public']['Tables']['profiles']['Row']
 
 export function useProfile(userId: string | null) {
-  const [profile, setProfile] = useState<any>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -48,11 +51,10 @@ export function useProfile(userId: string | null) {
           filter: `id=eq.${userId}`,
         },
         (payload) => {
-          console.log('Profile updated:', payload)
           if (payload.eventType === 'UPDATE') {
-            setProfile(payload.new)
+            setProfile(payload.new as Profile)
           } else if (payload.eventType === 'INSERT') {
-            setProfile(payload.new)
+            setProfile(payload.new as Profile)
           } else if (payload.eventType === 'DELETE') {
             setProfile(null)
           }

@@ -37,8 +37,8 @@ export function MessagesTable({ initialMessages, onMessagesChange }: MessagesTab
     setLoading(true)
     try {
       await updateMessageStatus(id, 'read')
-      const updatedMessages = messages.map(m => 
-        m.id === id ? { ...m, status: 'read' } : m
+      const updatedMessages = messages.map(m =>
+        m.id === id ? { ...m, status: 'read' as const } : m
       )
       updateMessages(updatedMessages)
     } catch (error) {

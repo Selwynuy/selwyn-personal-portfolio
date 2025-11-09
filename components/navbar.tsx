@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Home, User, Grid2x2, FileText, Image as ImageIcon } from 'lucide-react'
+import { Home, User as UserIcon, Grid2x2, FileText, Image as ImageIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { LogoutButton } from '@/components/logout-button'
@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { createClient } from '@/lib/client'
 import { useEffect, useState } from 'react'
+import type { User } from '@supabase/supabase-js'
 
 interface NavbarProps {
   enableBlog?: boolean
@@ -24,10 +25,8 @@ interface NavbarProps {
 }
 
 export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProps = {}) {
-  const pathname = usePathname()
-  const isHomePage = pathname === '/'
-  const [user, setUser] = useState<any>(null)
-  const [profile, setProfile] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Record<string, unknown> | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -36,7 +35,6 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
     try {
       const supabase = createClient()
       const { data: isAdminData } = await supabase.rpc('is_admin', { user_id: userId })
-      console.log('Navbar: Admin check result:', isAdminData)
       setIsAdmin(isAdminData || false)
     } catch (error) {
       console.error('Error checking admin status (non-blocking):', error)
@@ -53,8 +51,7 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
         .select('*')
         .eq('id', userId)
         .single()
-      
-      console.log('Navbar: Profile fetched:', !!profileData)
+
       setProfile(profileData)
     } catch (error) {
       console.error('Error fetching profile (non-blocking):', error)
@@ -64,16 +61,14 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
 
   useEffect(() => {
     const supabase = createClient()
-    
+
     // Get initial user state
     const getUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
-        console.log('Navbar: Initial user state:', user ? 'Logged in' : 'Not logged in')
         setUser(user)
-        
+
         if (user) {
-          console.log('Navbar: User email:', user.email)
           // Check admin status and fetch profile in background (non-blocking)
           checkAdminStatus(user.id)
           fetchProfile(user.id)
@@ -91,21 +86,18 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Navbar: Auth state changed:', event, session ? 'Session exists' : 'No session')
-        
         // Always update user state first
         setUser(session?.user ?? null)
-        
+
         // Check admin status and fetch profile for new user (non-blocking)
         if (session?.user) {
-          console.log('Navbar: User email from session:', session.user.email)
           checkAdminStatus(session.user.id)
           fetchProfile(session.user.id)
         } else {
           setIsAdmin(false)
           setProfile(null)
         }
-        
+
         // Always ensure loading is false after auth state change
         setLoading(false)
       }
@@ -116,7 +108,6 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
 
   // Show user dropdown for any authenticated user, regardless of admin status
   const showUserDropdown = user && !loading
-  console.log('Navbar: showUserDropdown:', showUserDropdown, 'user:', !!user, 'loading:', loading)
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full">
@@ -129,7 +120,7 @@ export function Navbar({ enableBlog = false, enableGallery = false }: NavbarProp
             </Link>
             <div className="flex flex-1 items-center justify-center gap-1 sm:gap-2">
               <Link href="/#about" className="flex items-center gap-2 rounded-full px-3 py-1 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
-                <User className="h-4 w-4" />
+                <UserIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">About</span>
               </Link>
               <Link href="/#projects" className="flex items-center gap-2 rounded-full px-3 py-1 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">

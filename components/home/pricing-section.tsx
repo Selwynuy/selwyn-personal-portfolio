@@ -65,7 +65,7 @@ const pricingTiers = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-100 via-purple-50 to-purple-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <section id="pricing" className="relative py-16 px-4 sm:py-20 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-100 via-purple-50 to-purple-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent dark:via-blue-500/10" />
       {/* Gradient orbs for light mode */}
@@ -77,17 +77,17 @@ export function PricingSection() {
 
       <div className="relative max-w-7xl mx-auto">
         {/* Section header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 bg-clip-text text-transparent">
             Pricing Plans
           </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto px-4">
             Transparent pricing for every project size. All plans include responsive design and modern development.
           </p>
         </div>
 
         {/* Pricing cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-6 lg:gap-8 items-stretch">
           {pricingTiers.map((tier, index) => (
             <div
               key={index}
@@ -173,7 +173,7 @@ export function PricingSection() {
             All prices are in Philippine Peso (₱). Timeline and final cost depend on project scope.
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            Need a custom solution? <a href="#contact" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">Let's discuss your project</a>
+            Need a custom solution? <a href="#contact" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">Let&apos;s discuss your project</a>
           </p>
         </div>
       </div>

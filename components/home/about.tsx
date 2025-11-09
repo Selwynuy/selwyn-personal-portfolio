@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Code2, Palette, Rocket, Zap, Users } from 'lucide-react'
-import { colors } from '@/lib/design-system'
 
 const skills = [
   {
@@ -39,7 +38,7 @@ const stats = [
 
 export function About() {
   return (
-    <section id="about" className="relative overflow-hidden py-24 bg-gradient-to-br from-purple-100 via-blue-100 to-cyan-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
+    <section id="about" className="relative overflow-hidden py-16 sm:py-24 bg-gradient-to-br from-purple-100 via-blue-100 to-cyan-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02] dark:opacity-[0.05]" />
       {/* Gradient orbs for light mode */}
@@ -49,43 +48,43 @@ export function About() {
         <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.15)_0%,transparent_70%)] blur-3xl" />
       </div>
 
-      <div className="container relative mx-auto px-4">
+      <div className="container relative mx-auto px-4 sm:px-6">
         <div className="mx-auto max-w-6xl">
           {/* Header */}
-          <div className="mb-16 text-center">
+          <div className="mb-12 text-center sm:mb-16">
             <div className="mb-4 inline-block rounded-full bg-gradient-to-r from-blue-600/10 to-purple-600/10 px-4 py-1.5">
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-sm font-semibold text-transparent dark:from-blue-500 dark:to-purple-500">
                 Get to know me
               </span>
             </div>
-            <h2 className="mb-4 text-4xl font-bold text-slate-900 dark:text-white md:text-5xl">
+            <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl md:text-5xl">
               About Me
             </h2>
-            <p className="mx-auto max-w-2xl text-lg text-slate-600 dark:text-slate-300">
+            <p className="mx-auto max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg">
               Passionate about crafting exceptional digital experiences through clean code and innovative design
             </p>
           </div>
 
           {/* Main Content Grid */}
-          <div className="mb-16 grid gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="mb-12 grid gap-6 sm:mb-16 sm:gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Left Column - Story */}
             <div className="space-y-6">
-              <div className="rounded-2xl border border-blue-300 bg-white/90 p-8 backdrop-blur-sm shadow-xl shadow-blue-500/20 dark:border-slate-800 dark:bg-slate-900/50 dark:shadow-none">
+              <div className="rounded-2xl border border-blue-300 bg-white/90 p-6 backdrop-blur-sm shadow-xl shadow-blue-500/20 dark:border-slate-800 dark:bg-slate-900/50 dark:shadow-none sm:p-8">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-2">
                     <Users className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white sm:text-xl">
                     My Journey
                   </h3>
                 </div>
-                <p className="mb-4 text-slate-600 dark:text-slate-300">
-                  I'm a passionate full-stack developer with expertise in modern web technologies.
+                <p className="mb-4 text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+                  I&apos;m a passionate full-stack developer with expertise in modern web technologies.
                   I love building applications that solve real-world problems and provide exceptional user experiences.
                 </p>
-                <p className="text-slate-600 dark:text-slate-300">
+                <p className="text-sm text-slate-600 dark:text-slate-300 sm:text-base">
                   With a strong foundation in both frontend and backend development, I bring ideas to life
-                  through clean, efficient code and thoughtful design. I'm always learning and exploring
+                  through clean, efficient code and thoughtful design. I&apos;m always learning and exploring
                   new technologies to stay current in this fast-paced industry.
                 </p>
               </div>
@@ -131,18 +130,18 @@ export function About() {
           </div>
 
           {/* Stats Section */}
-          <div className="rounded-2xl border border-purple-300 bg-gradient-to-br from-white via-purple-100 to-blue-100 p-8 shadow-xl shadow-purple-500/20 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 dark:shadow-none">
-            <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+          <div className="rounded-2xl border border-purple-300 bg-gradient-to-br from-white via-purple-100 to-blue-100 p-6 shadow-xl shadow-purple-500/20 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 dark:shadow-none sm:p-8">
+            <div className="grid grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4">
               {stats.map((stat, index) => (
                 <div
                   key={stat.label}
                   className="text-center"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-bold text-transparent dark:from-blue-500 dark:to-purple-500 md:text-5xl">
+                  <div className="mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-3xl font-bold text-transparent dark:from-blue-500 dark:to-purple-500 sm:text-4xl md:text-5xl">
                     {stat.value}
                   </div>
-                  <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  <div className="text-xs font-medium text-slate-600 dark:text-slate-400 sm:text-sm">
                     {stat.label}
                   </div>
                 </div>

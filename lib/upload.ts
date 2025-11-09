@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/server'
 import { v4 as uuidv4 } from 'uuid'
 
-export async function uploadImage(file: File, bucket: 'avatars' | 'projects' | 'resumes' = 'projects') {
+export async function uploadImage(file: File, bucket: 'avatars' | 'projects' | 'resumes' | 'blog' | 'gallery' | 'gallery-thumbnails' = 'projects') {
   try {
     const supabase = await createClient()
 

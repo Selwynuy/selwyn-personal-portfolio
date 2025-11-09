@@ -15,8 +15,8 @@ export function ContactSection({ userId }: ContactSectionProps) {
           Get In Touch
         </h2>
         <p className="text-lg text-slate-600 dark:text-slate-300 mb-12 text-center">
-          I'm always interested in new opportunities and exciting projects. 
-          Let's work together!
+          I&apos;m always interested in new opportunities and exciting projects.
+          Let&apos;s work together!
         </p>
         {userId ? (
           <Card>

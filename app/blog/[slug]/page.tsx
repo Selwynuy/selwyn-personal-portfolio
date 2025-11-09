@@ -1,4 +1,3 @@
-import { createClient } from '@/lib/server'
 import { getBlogPost, incrementBlogViews } from '@/lib/actions'
 import { notFound } from 'next/navigation'
 import { Calendar, Clock, ArrowLeft } from 'lucide-react'
@@ -109,7 +108,7 @@ export default async function BlogPostPage({
         </div>
       </article>
     )
-  } catch (error) {
+  } catch {
     notFound()
   }
 }

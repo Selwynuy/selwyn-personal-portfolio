@@ -6,7 +6,7 @@ import { uploadImage } from '@/lib/upload'
 
 interface ImageUploadProps {
   onUpload: (url: string) => void
-  bucket?: 'avatars' | 'projects' | 'resumes'
+  bucket?: 'avatars' | 'projects' | 'resumes' | 'blog' | 'gallery' | 'gallery-thumbnails'
   accept?: string
   maxSizeMB?: number
   buttonText?: string

@@ -4,7 +4,6 @@ import { createClient } from '@/lib/server'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { createProfile } from '@/lib/actions'
 import { LogoutButton } from '@/components/logout-button'
@@ -64,9 +63,9 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       .select('*')
       .eq('id', user.id)
       .single()
-    
+
     profile = profileData
-  } catch (profileError) {
+  } catch {
     // Profile doesn't exist, create one
     try {
       profile = await createProfile(user.id, user.email || '')

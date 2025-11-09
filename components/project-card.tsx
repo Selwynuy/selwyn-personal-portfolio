@@ -82,10 +82,10 @@ export function ProjectCard({ project, showStats = false }: ProjectCardProps) {
             </Button>
           )}
           {project.github_url && (
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
-              onClick={() => window.open(project.github_url, '_blank')}
+              onClick={() => project.github_url && window.open(project.github_url, '_blank')}
             >
               Source Code
             </Button>

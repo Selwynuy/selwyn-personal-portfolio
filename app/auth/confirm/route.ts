@@ -10,8 +10,6 @@ export async function GET(request: NextRequest) {
   const _next = searchParams.get('next')
   const next = _next?.startsWith('/') ? _next : '/'
 
-  console.log('Email confirmation attempt:', { token_hash: !!token_hash, type, url: request.url })
-
   if (token_hash && type) {
     const supabase = await createClient()
 
@@ -20,7 +18,6 @@ export async function GET(request: NextRequest) {
       token_hash,
     })
     if (!error) {
-      console.log('Email confirmed successfully, redirecting to:', next)
       // redirect user to specified redirect URL or root of app
       redirect(next)
     } else {
@@ -30,13 +27,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Log the missing parameters for debugging
-  console.error('Missing email confirmation parameters:', { 
-    token_hash: !!token_hash, 
-    type, 
-    fullUrl: request.url 
-  })
-  
   // redirect the user to an error page with some instructions
   redirect(`/auth/error?error=${encodeURIComponent('No token hash or type found in confirmation link')}`)
 }

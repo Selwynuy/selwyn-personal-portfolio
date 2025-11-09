@@ -41,7 +41,6 @@ export async function signUp(email: string, password: string) {
 
   // Profile creation is now handled automatically by database triggers
   // No need to manually create profile here
-  console.log('User signed up successfully:', data.user?.id, 'email:', email)
 
   return data
 }
@@ -78,26 +77,20 @@ export async function getSiteSettings() {
 export async function updateSiteSettings(settings: Partial<SiteSettings>) {
   const supabase = await createClient()
 
-  console.log('updateSiteSettings called with:', settings)
-
   // Prefer RPC if available; fallback to direct update
   let rpcError: unknown = null
   try {
     const { data, error } = await supabase.rpc('update_site_settings', { p: settings as unknown as Record<string, unknown> })
     if (error) rpcError = error
     if (!rpcError) {
-      console.log('Site settings updated via RPC successfully')
       revalidatePath('/dashboard/settings')
       return data as SiteSettings
     }
   } catch (e) {
     rpcError = e
-    console.log('RPC failed, falling back to direct update:', e)
   }
 
-  console.log('Attempting direct update to site_settings table')
   const updatePayload = { ...settings, updated_at: new Date().toISOString() }
-  console.log('Update payload:', updatePayload)
 
   const { data, error } = await supabase
     .from('site_settings')
@@ -110,9 +103,6 @@ export async function updateSiteSettings(settings: Partial<SiteSettings>) {
     console.error('Direct update failed:', error)
     throw error
   }
-
-  console.log('Site settings updated successfully. Returned data:', data)
-  console.log('Check if resume_url is in returned data:', data?.resume_url)
 
   revalidatePath('/dashboard/settings')
   return data as SiteSettings
@@ -140,9 +130,8 @@ export async function createProfile(userId: string, email: string) {
     .select('*')
     .eq('id', userId)
     .single()
-  
+
   if (existingProfile) {
-    console.log('Profile already exists for user:', userId)
     return existingProfile as Profile
   }
   
@@ -166,16 +155,15 @@ export async function createProfile(userId: string, email: string) {
     console.error('Error creating profile:', error)
     throw error
   }
-  
-  console.log('Profile created successfully for user:', userId)
+
   return data as Profile
 }
 
 export async function updateProfile(userId: string, profile: Partial<Profile>) {
   const supabase = await createClient()
-  
+
   // First, try to get the existing profile
-  const { data: existingProfile, error: fetchError } = await supabase
+  const { error: fetchError } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)

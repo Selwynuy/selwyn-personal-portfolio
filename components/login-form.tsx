@@ -52,7 +52,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           } else {
             router.push(redirectTo)
           }
-        } catch (adminCheckError) {
+        } catch {
           // If admin check fails, assume not admin and redirect to home
           router.push(redirectTo === '/dashboard' || redirectTo.startsWith('/dashboard') ? '/' : redirectTo)
         }

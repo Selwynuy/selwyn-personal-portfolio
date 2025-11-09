@@ -67,7 +67,8 @@ export function ProjectForm({ userId, project, onSuccess }: ProjectFormProps) {
       const projectData = {
         ...formData,
         technologies: formData.technologies.split(',').map(t => t.trim()).filter(Boolean),
-        user_id: userId
+        user_id: userId,
+        view_count: 0
       }
 
       let saved = project

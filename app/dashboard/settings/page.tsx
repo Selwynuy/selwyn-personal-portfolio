@@ -19,9 +19,9 @@ export default async function SettingsPage() {
       .select('*')
       .eq('id', user.id)
       .single()
-    
+
     profile = profileData
-  } catch (profileError) {
+  } catch {
     // Profile doesn't exist, create one
     try {
       profile = await createProfile(user.id, user.email || '')
@@ -33,13 +33,22 @@ export default async function SettingsPage() {
 
   // Check admin and fetch site settings (singleton)
   const { data: isAdmin } = await supabase.rpc('is_admin', { user_id: user.id })
-  let siteSettings: any = null
+  type SiteSettings = {
+    show_view_counts: boolean
+    show_featured_first: boolean
+    enable_blog: boolean
+    enable_gallery: boolean
+    meta_title: string | null
+    meta_description: string | null
+    resume_url: string | null
+  }
+  let siteSettings: SiteSettings | null = null
   if (isAdmin) {
     const { data } = await supabase
       .from('site_settings')
       .select('*')
       .single()
-    siteSettings = data
+    siteSettings = data as SiteSettings | null
   }
 
   return (

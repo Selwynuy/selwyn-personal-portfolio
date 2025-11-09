@@ -13,6 +13,7 @@ export default async function GalleryListingPage() {
     .order('position', { ascending: true })
 
   // Group by category
+  type GalleryItem = NonNullable<typeof items>[number]
   const categories = items?.reduce((acc, item) => {
     const category = item.category || 'Uncategorized'
     if (!acc[category]) {
@@ -20,7 +21,7 @@ export default async function GalleryListingPage() {
     }
     acc[category].push(item)
     return acc
-  }, {} as Record<string, typeof items>)
+  }, {} as Record<string, GalleryItem[]>)
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
@@ -45,7 +46,9 @@ export default async function GalleryListingPage() {
           {/* Gallery */}
           {items && items.length > 0 ? (
             <div className="space-y-16">
-              {Object.entries(categories || {}).map(([category, categoryItems]) => (
+              {(() => {
+                const categoriesData: Record<string, GalleryItem[]> = categories || {}
+                return Object.entries(categoriesData).map(([category, categoryItems]) => (
                 <section key={category}>
                   <h2 className="mb-8 text-3xl font-bold text-slate-900 dark:text-white">
                     {category}
@@ -71,7 +74,7 @@ export default async function GalleryListingPage() {
                             )}
                             {item.tags && item.tags.length > 0 && (
                               <div className="mt-2 flex flex-wrap gap-1">
-                                {item.tags.slice(0, 3).map((tag) => (
+                                {item.tags.slice(0, 3).map((tag: string) => (
                                   <span
                                     key={tag}
                                     className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium backdrop-blur-sm"
@@ -87,7 +90,7 @@ export default async function GalleryListingPage() {
                     ))}
                   </div>
                 </section>
-              ))}
+              ))})()}
             </div>
           ) : (
             <div className="py-20 text-center">

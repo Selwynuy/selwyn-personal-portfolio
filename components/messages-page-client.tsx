@@ -61,11 +61,9 @@ export function MessagesPageClient({ initialMessages, userId }: MessagesPageClie
       await Promise.all(
         readMessages.map(msg => deleteMessage(msg.id))
       )
-      
+
       // Update local state
       setMessages(messages.filter(msg => msg.status !== 'read'))
-      
-      console.log(`Deleted ${readMessages.length} read messages`)
     } catch (error) {
       console.error('Error clearing read messages:', error)
       alert('Failed to clear read messages. Please try again.')

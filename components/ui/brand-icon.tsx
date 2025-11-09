@@ -13,7 +13,7 @@ interface BrandIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export function BrandIcon({ name, title, path, viewBox = '0 0 24 24', className, ...props }: BrandIconProps) {
-  const icon = name ? (SI as any)[name] : undefined
+  const icon = name ? (SI as unknown as Record<string, { path: string; title: string }>)[name] : undefined
   const finalPath = path || icon?.path
   const finalTitle = title || icon?.title || name
   if (!finalPath) {

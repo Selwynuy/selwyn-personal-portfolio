@@ -72,7 +72,7 @@ export default async function BlogListingPage() {
                     <CardContent>
                       {post.tags && post.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2">
-                          {post.tags.slice(0, 3).map((tag) => (
+                          {post.tags.slice(0, 3).map((tag: string) => (
                             <span
                               key={tag}
                               className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300"

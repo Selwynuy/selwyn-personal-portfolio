@@ -15,11 +15,12 @@ import { SocialLinksEditor } from '@/components/social-links-editor'
 import { Database } from '@/lib/database.types'
 import { updateProfile, updateSiteSettings } from '@/lib/actions'
 import { CheckCircle } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
 interface SettingsFormProps {
-  user: any
+  user: User
   profile?: Profile | null
   siteSettings?: {
     show_view_counts: boolean

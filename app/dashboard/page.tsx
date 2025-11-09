@@ -1,12 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
-import { TrendingUp, FolderOpen, Mail, User, Edit, FileText, MessageSquare, Eye, Plus, Image as ImageIcon, BookOpen } from 'lucide-react'
+import { TrendingUp, FolderOpen, Mail, Edit, MessageSquare, Eye, Plus, Image as ImageIcon, BookOpen } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -22,7 +20,7 @@ export default async function DashboardPage() {
   const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, now.getDate())
 
   // Fetch real data
-  const [projectsResult, messagesResult, profileResult, recentProjectsResult, oldProjectsResult, blogPostsResult, galleryItemsResult, siteSettingsResult] = await Promise.all([
+  const [projectsResult, messagesResult, profileResult, recentProjectsResult, oldProjectsResult, blogPostsResult, galleryItemsResult] = await Promise.all([
     supabase
       .from('projects')
       .select('*')
@@ -60,12 +58,7 @@ export default async function DashboardPage() {
     supabase
       .from('gallery_items')
       .select('*')
-      .eq('user_id', user.id),
-    // Site settings
-    supabase
-      .from('site_settings')
-      .select('*')
-      .single()
+      .eq('user_id', user.id)
   ])
 
   const projects = projectsResult.data || []
@@ -75,12 +68,10 @@ export default async function DashboardPage() {
   const oldProjects = oldProjectsResult.data || []
   const blogPosts = blogPostsResult.data || []
   const galleryItems = galleryItemsResult.data || []
-  const siteSettings = siteSettingsResult.data
 
   // Calculate statistics
   const totalViews = projects.reduce((sum, project) => sum + (project.view_count || 0), 0)
   const publishedProjects = projects.filter(p => p.status === 'published')
-  const featuredProjects = projects.filter(p => p.featured)
   const unreadMessages = messages.filter(m => m.status === 'unread')
   const recentMessages = messages.slice(0, 3)
 
@@ -115,7 +106,7 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
           <p className="text-slate-600 dark:text-slate-300">
-            Welcome back, {profile?.full_name || user.email}! Here's an overview of your portfolio.
+            Welcome back, {profile?.full_name || user.email}! Here&apos;s an overview of your portfolio.
           </p>
         </div>
         <Link href="/dashboard/projects">
@@ -201,7 +192,7 @@ export default async function DashboardPage() {
         <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Your portfolio's latest updates and interactions</CardDescription>
+            <CardDescription>Your portfolio&apos;s latest updates and interactions</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
