@@ -14,7 +14,7 @@ interface FormErrors {
 }
 
 interface ContactFormProps {
-  userId: string
+  userId?: string | null
 }
 
 export function ContactForm({ userId }: ContactFormProps) {
@@ -95,7 +95,7 @@ export function ContactForm({ userId }: ContactFormProps) {
     try {
       await createMessage({
         ...formData,
-        user_id: userId,
+        user_id: userId || null,
         status: 'unread'
       })
 

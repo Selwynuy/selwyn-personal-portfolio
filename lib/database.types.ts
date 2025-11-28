@@ -149,7 +149,7 @@ export interface Database {
           subject: string | null
           message: string
           status: 'unread' | 'read' | 'archived'
-          user_id: string
+          user_id: string | null
           updated_at: string
           created_at: string
         }
@@ -160,7 +160,7 @@ export interface Database {
           subject?: string | null
           message: string
           status?: 'unread' | 'read' | 'archived'
-          user_id: string
+          user_id?: string | null
           updated_at?: string
           created_at?: string
         }
@@ -171,7 +171,7 @@ export interface Database {
           subject?: string | null
           message?: string
           status?: 'unread' | 'read' | 'archived'
-          user_id?: string
+          user_id?: string | null
           updated_at?: string
           created_at?: string
         }
