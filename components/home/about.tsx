@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Code2, Palette, Rocket, Zap, Users } from 'lucide-react'
 
@@ -51,7 +52,7 @@ export function About() {
       <div className="container relative mx-auto px-4 sm:px-6">
         <div className="mx-auto max-w-6xl">
           {/* Header */}
-          <div className="mb-12 text-center sm:mb-16">
+          <div className="mb-8 text-center sm:mb-10">
             <div className="mb-4 inline-block rounded-full bg-gradient-to-r from-blue-600/10 to-purple-600/10 px-4 py-1.5">
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-sm font-semibold text-transparent dark:from-blue-500 dark:to-purple-500">
                 Get to know me
@@ -66,72 +67,78 @@ export function About() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="mb-12 grid gap-6 sm:mb-16 sm:gap-8 lg:grid-cols-2 lg:gap-12">
-            {/* Left Column - Story */}
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-blue-300 bg-white/90 p-6 backdrop-blur-sm shadow-xl shadow-blue-500/20 dark:border-slate-800 dark:bg-slate-900/50 dark:shadow-none sm:p-8">
-                <div className="mb-4 flex items-center gap-3">
+          <div className="mb-6 grid gap-4 sm:mb-8 sm:gap-6 lg:grid-cols-[400px_1fr] lg:gap-8 lg:items-stretch">
+            {/* Left Column - Big Profile Picture */}
+            <div className="flex justify-center lg:justify-start">
+              <div className="relative h-80 w-full overflow-hidden rounded-2xl border-2 border-slate-200 dark:border-slate-700 sm:h-96 lg:h-full">
+                <Image
+                  src="/Profile.jpg"
+                  alt="Profile"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Right Column - Description & Skills */}
+            <div className="space-y-4 sm:space-y-5">
+              {/* Story Card */}
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+                <div className="mb-3 flex items-center gap-3">
                   <div className="rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-2">
-                    <Users className="h-5 w-5 text-white" />
+                    <Users className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                   </div>
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white sm:text-xl">
+                  <h3 className="text-base font-semibold text-slate-900 dark:text-white sm:text-lg">
                     My Journey
                   </h3>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+                <p className="mb-3 text-xs text-slate-600 dark:text-slate-300 sm:text-sm">
                   I&apos;m a passionate full-stack developer with expertise in modern web technologies.
                   I love building applications that solve real-world problems and provide exceptional user experiences.
                 </p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+                <p className="mb-4 text-xs text-slate-600 dark:text-slate-300 sm:text-sm">
                   With a strong foundation in both frontend and backend development, I bring ideas to life
-                  through clean, efficient code and thoughtful design. I&apos;m always learning and exploring
-                  new technologies to stay current in this fast-paced industry.
+                  through clean, efficient code and thoughtful design.
                 </p>
-              </div>
-
-              {/* Action Button */}
-              <div className="flex flex-wrap gap-4">
                 <Link href="/#contact">
                   <Button
-                    size="lg"
+                    size="sm"
                     className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 dark:from-blue-500 dark:to-purple-500"
                   >
                     Contact Me
                   </Button>
                 </Link>
               </div>
-            </div>
 
-            {/* Right Column - Skills Grid */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              {skills.map((skill, index) => (
-                <div
-                  key={skill.title}
-                  className="group relative overflow-hidden rounded-2xl border border-purple-300 bg-gradient-to-br from-white via-purple-50 to-blue-100 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20 hover:border-purple-400 dark:border-slate-800 dark:bg-slate-900/80 dark:from-slate-900/80 dark:to-slate-900/80"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  {/* Gradient Background on Hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${skill.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-12`} />
-
-                  <div className="relative">
-                    <div className={`mb-4 inline-flex rounded-xl bg-gradient-to-br ${skill.gradient} p-3 shadow-lg`}>
-                      <skill.icon className="h-5 w-5 text-white" />
+              {/* Skills Grid */}
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {skills.map((skill, index) => (
+                  <div
+                    key={skill.title}
+                    className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 sm:p-5"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="relative">
+                      <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${skill.gradient} p-2.5 shadow-lg`}>
+                        <skill.icon className="h-4 w-4 text-white sm:h-5 sm:w-5" />
+                      </div>
+                      <h4 className="mb-1.5 text-sm font-semibold text-slate-900 dark:text-white sm:text-base">
+                        {skill.title}
+                      </h4>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 sm:text-sm">
+                        {skill.description}
+                      </p>
                     </div>
-                    <h4 className="mb-2 font-semibold text-slate-900 dark:text-white">
-                      {skill.title}
-                    </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {skill.description}
-                    </p>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Stats Section */}
-          <div className="rounded-2xl border border-purple-300 bg-gradient-to-br from-white via-purple-100 to-blue-100 p-6 shadow-xl shadow-purple-500/20 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 dark:shadow-none sm:p-8">
-            <div className="grid grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
+            <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-4">
               {stats.map((stat, index) => (
                 <div
                   key={stat.label}
